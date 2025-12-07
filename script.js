@@ -1,74 +1,101 @@
-// ---------- หน้า index.html ----------
-if(document.getElementById('avatar-emoji')){
+// ดึงข้อมูล player จาก index.html หรือ park.html
+let player = {
+  name: '',
+  emoji: '🧙‍♂️',
+  bg: '#1e3c72',
+  points: 0,
+  votes: {},
+  reviews: []
+};
+
+// หน้าแรก index.html
+if(document.getElementById('welcome-screen')){
   const avatarInput = document.getElementById('avatar-emoji');
   const avatarBgInput = document.getElementById('avatar-bg');
   const avatarPreview = document.getElementById('avatar-preview');
   const startBtn = document.getElementById('start-btn');
+  const nameInput = document.getElementById('player-name');
 
   function updateAvatarPreview(){
     avatarPreview.textContent = avatarInput.value || '🧙‍♂️';
     avatarPreview.style.backgroundColor = avatarBgInput.value;
   }
+
   avatarInput.addEventListener('input', updateAvatarPreview);
   avatarBgInput.addEventListener('input', updateAvatarPreview);
 
   startBtn.addEventListener('click', ()=>{
-    const name = document.getElementById('player-name').value.trim();
+    const name = nameInput.value.trim();
     if(!name){ alert('กรุณาพิมพ์ชื่อผู้เล่น'); return; }
-    startBtn.classList.add('active');
-    setTimeout(()=> startBtn.classList.remove('active'), 300);
-    setTimeout(()=>{
-      // ส่ง avatar + bg ผ่าน query param
-      const emoji = avatarInput.value || '🧙‍♂️';
-      const bg = avatarBgInput.value;
-      window.location.href = `park.html?player=${encodeURIComponent(name)}&emoji=${encodeURIComponent(emoji)}&bg=${encodeURIComponent(bg)}`;
-    },400);
+    player.name = name;
+    player.emoji = avatarInput.value || '🧙‍♂️';
+    player.bg = avatarBgInput.value;
+    alert(`ยินดีต้อนรับ ${player.name}! เจ้าผู้กล้าแห่งทีม YumYum Network สู่โลกของ TastLink!`);
+    // ส่งชื่อไป park.html
+    localStorage.setItem('player', JSON.stringify(player));
+    window.location.href = 'park.html';
   });
 }
 
-// ---------- หน้า park.html ----------
+// หน้า park.html
 if(document.getElementById('park-screen')){
-  const urlParams = new URLSearchParams(window.location.search);
-  const playerName = urlParams.get('player') || 'นักผจญภัย';
-  const playerEmoji = urlParams.get('emoji') || '🧙‍♂️';
-  const playerBg = urlParams.get('bg') || '#1e3c72';
+  const stored = localStorage.getItem('player');
+  if(stored) player = JSON.parse(stored);
 
-  const playerAvatar = document.getElementById('player-avatar');
-  const playerNameDisplay = document.getElementById('player-name-display');
-  playerAvatar.textContent = playerEmoji;
-  playerAvatar.style.backgroundColor = playerBg;
-  playerNameDisplay.textContent = playerName;
+  const avatarDisplay = document.getElementById('avatar-display');
+  const nameDisplay = document.getElementById('player-name-display');
+  const pointsDisplay = document.getElementById('player-points');
+  avatarDisplay.textContent = player.emoji;
+  avatarDisplay.style.backgroundColor = player.bg;
+  nameDisplay.textContent = player.name;
+  pointsDisplay.textContent = `คะแนน: ${player.points}`;
 
-  // ตัวอย่างร้านอาหาร
+  // สร้างร้านค้า+เมนูอาหาร
+  const shopList = document.querySelector('.shop-list');
   const shops = [
-    {name:'ร้านน้ำเต้าหู้', menus:[{name:'เต้าฮวย',price:25},{name:'น้ำเต้าหู้',price:20},{name:'ปาท่องโก๋',price:15}]},
-    {name:'ร้านไก่ทอด', menus:[{name:'ไก่ทอด',price:35},{name:'ซุปไก่',price:30},{name:'น้ำจิ้ม',price:10}]},
-    {name:'ร้านบะหมี่', menus:[{name:'บะหมี่หมูแดง',price:40},{name:'เกี๊ยว',price:30},{name:'น้ำซุป',price:15}]},
-    {name:'ร้านชา', menus:[{name:'ชาเย็น',price:25},{name:'ชาเขียว',price:30},{name:'ขนมปัง',price:15}]},
-    {name:'ร้านผลไม้', menus:[{name:'ส้ม',price:15},{name:'มะม่วง',price:25},{name:'แอปเปิ้ล',price:20}]},
+    {name:'ร้าน A', menus:[{name:'เมนู A1',price:50},{name:'เมนู A2',price:60},{name:'เมนู A3',price:70}]},
+    {name:'ร้าน B', menus:[{name:'เมนู B1',price:55},{name:'เมนู B2',price:65},{name:'เมนู B3',price:75}]},
+    {name:'ร้าน C', menus:[{name:'เมนู C1',price:40},{name:'เมนู C2',price:50},{name:'เมนู C3',price:60}]},
+    {name:'ร้าน D', menus:[{name:'เมนู D1',price:45},{name:'เมนู D2',price:55},{name:'เมนู D3',price:65}]},
+    {name:'ร้าน E', menus:[{name:'เมนู E1',price:70},{name:'เมนู E2',price:80},{name:'เมนู E3',price:90}]}
   ];
 
-  const shopsContainer = document.getElementById('shops-container');
-
-  shops.forEach(shop=>{
-    const shopDiv = document.createElement('div');
-    shopDiv.className='shop';
-    shopDiv.innerHTML=`<span>${shop.name}</span>`;
-    shop.menus.forEach(menu=>{
+  shops.forEach((shop,si)=>{
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    div.innerHTML = `<h3>${shop.name}</h3>`;
+    shop.menus.forEach((menu,mi)=>{
       const menuDiv = document.createElement('div');
       menuDiv.className='menu-item';
-      menuDiv.textContent = `${menu.name} - ${menu.price}฿`;
-      menuDiv.addEventListener('click', ()=>{
-        alert(`โหวตให้ ${shop.name} เมนู ${menu.name}`);
-        // เพิ่มคะแนน, อวาตาร์ในสวน, etc.
-      });
-      shopDiv.appendChild(menuDiv);
+      menuDiv.innerHTML = `${menu.name} - ${menu.price} บาท <button class="glow-button vote-btn" data-shop="${si}" data-menu="${mi}">โหวต</button>`;
+      div.appendChild(menuDiv);
     });
-    shopsContainer.appendChild(shopDiv);
+    shopList.appendChild(div);
   });
 
-  // ปุ่มรีเฟรชสวน
-  document.getElementById('refresh-btn').addEventListener('click', ()=>{
-    alert('สวนได้รับการรีเฟรช! อวาตาร์เพื่อนๆและรีวิวใหม่จะปรากฏ');
+  // vote logic
+  document.querySelectorAll('.vote-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const si = btn.dataset.shop;
+      const mi = btn.dataset.menu;
+      const keyShop = `shop-${si}`;
+      const keyMenu = `shop-${si}-menu-${mi}`;
+      if(player.votes[keyShop] && player.votes[keyMenu]){
+        alert('คุณโหวตแล้วร้านนี้และเมนูนี้');
+        return;
+      }
+      player.votes[keyShop]=true;
+      player.votes[keyMenu]=true;
+      player.points += 10;
+      pointsDisplay.textContent = `คะแนน: ${player.points}`;
+      // update avatar in garden
+      const garden = document.getElementById('garden-display');
+      const reviewDiv = document.createElement('div');
+      reviewDiv.className='player-review';
+      reviewDiv.innerHTML = `<div style="font-size:50px; background:${player.bg}">${player.emoji}</div><span>ชอบ ${shops[si].menus[mi].name} ที่ร้าน ${shops[si].name}</span>`;
+      garden.appendChild(reviewDiv);
+      // save back
+      localStorage.setItem('player', JSON.stringify(player));
+    });
   });
 }
