@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YumYum Park 🌳 | TasteLink</title>
+<style>
+  /* ------------------ พื้นฐาน ------------------ */
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Comic Sans MS', sans-serif;
+    background: #cce7ff;
+    overflow-x: hidden;
+  }
+  h1, h2, h3 { text-align: center; color: #ff6f61; text-shadow: 2px 2px #ffe066; }
+
+  /* ------------------ พื้นสวน ------------------ */
+  #park {
+    position: relative;
+    width: 100%;
+    height: 90vh;
+    background: url('https://images.unsplash.com/photo-1601914764647-efcab95e95b4?auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding-bottom: 20px;
+  }
+
+  /* ------------------ ร้านอาหาร ------------------ */
+  .restaurant {
+    width: 160px;
+    height: 180px;
+    background-color: rgba(255,255,255,0.9);
+    border: 3px solid #ff6f61;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .restaurant:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+
+  .restaurant img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .status {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-weight: bold;
+    color: white;
+  }
+  .Busy { background-color: #ff4d4d; }
+  .Available { background-color: #4dff4d; }
+
+  /* ------------------ แถบ Community ------------------ */
+  #community {
+    height: 30vh;
+    overflow-y: auto;
+    background-color: #fff7e6;
+    border-top: 3px solid #ffcc00;
+    padding: 10px;
+  }
+  .post {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .post img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  .post-content {
+    background-color: #ffe066;
+    padding: 6px 10px;
+    border-radius: 8px;
+    flex: 1;
+  }
+
+  /* ------------------ Ranking ------------------ */
+  #ranking {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  .rank-box {
+    background-color: #ffffffcc;
+    padding: 10px;
+    border-radius: 8px;
+    width: 30%;
+  }
+
+  footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+  }
+
+</style>
+</head>
+<body>
+
+<h1>🌳 ยินดีต้อนรับสู่ YumYum Park 🌳</h1>
+<h3>ผู้กล้า: <span id="player-name-display"></span></h3>
+<div id="park"></div>
+
+<div id="ranking">
+  <div class="rank-box">
+    <h3>Top ร้าน</h3>
+    <ul id="restaurant-ranking"></ul>
+  </div>
+  <div class="rank-box">
+    <h3>Top เมนู</h3>
+    <ul id="menu-ranking"></ul>
+  </div>
+</div>
+
+<div id="community">
+  <h3>ชุมชน / รีวิว</h3>
+  <div id="posts"></div>
+</div>
+
+<footer>
+  © 2025 TasteLink - YumYum Park
+</footer>
+
+<script>
+  // ------------------ โหลดผู้เล่น ------------------
+  const playerName = localStorage.getItem('playerName') || 'นักผจญภัย';
+  const playerAvatar = localStorage.getItem('playerAvatar') || 'https://i.ibb.co/Y2GfKz6/avatar1.png';
+  document.getElementById('player-name-display').innerText = playerName;
+
+  // ------------------ ร้านอาหาร 5 ร้าน x เมนู 3 เมนู ------------------
+  const restaurants = [
+    { name: 'Dragon Diner', status: 'Available', menu: [
+      {name:'Fire Burger', img:'https://i.ibb.co/JyPxxPQ/burger.jpg', stars: 0},
+      {name:'Flame Fries', img:'https://i.ibb.co/4s2Lh6H/fries.jpg', stars: 0},
+      {name:'Dragon Soda', img:'https://i.ibb.co/Yf1V6v6/soda.jpg', stars: 0}
+    ], stars: 0},
+    { name: 'Elf Bakery', status: 'Busy', menu:[
+      {name:'Magic Bread', img:'https://i.ibb.co/6b9Q6J3/bread.jpg', stars: 0},
+      {name:'Elf Cake', img:'https://i.ibb.co/7CkpYbN/cake.jpg', stars: 0},
+      {name:'Potion Latte', img:'https://i.ibb.co/7kH6dTM/latte.jpg', stars: 0}
+    ], stars:0},
+    { name: 'Wizard\'s Tavern', status: 'Available', menu:[
+      {name:'Mana Stew', img:'https://i.ibb.co/5B1JvN6/stew.jpg', stars: 0},
+      {name:'Spell Sandwich', img:'https://i.ibb.co/6v1W6vC/sandwich.jpg', stars: 0},
+      {name:'Wizard Ale', img:'https://i.ibb.co/TkG1K7z/ale.jpg', stars: 0}
+    ], stars:0},
+    { name: 'Knight\'s Grill', status:'Busy', menu:[
+      {name:'Sword Steak', img:'https://i.ibb.co/6XK7k6S/steak.jpg', stars:0},
+      {name:'Shield Salad', img:'https://i.ibb.co/7vK5v6v/salad.jpg', stars:0},
+      {name:'Armor Ale', img:'https://i.ibb.co/5kH6vN7/armorale.jpg', stars:0}
+    ], stars:0},
+    { name: 'Goblin Snack', status:'Available', menu:[
+      {name:'Goblin Chips', img:'https://i.ibb.co/4pQJ6v8/chips.jpg', stars:0},
+      {name:'Slime Juice', img:'https://i.ibb.co/8kH6vL9/slime.jpg', stars:0},
+      {name:'Rock Candy', img:'https://i.ibb.co/9kJ7vN1/candy.jpg', stars:0}
+    ], stars:0},
+  ];
+
+  const parkDiv = document.getElementById('park');
+
+  restaurants.forEach((r, idx)=>{
+    const div = document.createElement('div');
+    div.className = 'restaurant';
+    div.innerHTML = `<h4>${r.name}</h4>
+                     <img src="${r.menu[0].img}" alt="${r.name}">
+                     <div class="status ${r.status}">${r.status}</div>`;
+    div.onclick = ()=>openRestaurant(idx);
+    parkDiv.appendChild(div);
+  });
+
+  function openRestaurant(idx){
+    const r = restaurants[idx];
+    let menuText = r.menu.map(m=>`${m.name} ⭐${m.stars}`).join('\n');
+    const comment = prompt(`คุณเลือก ${r.name}!\nเมนู:\n${menuText}\n\nให้ดาวร้าน/เมนูหรือคอมเม้น? (พิมพ์ข้อความ)`);
+    if(comment){
+      addPost(playerName, playerAvatar, `${r.name}: ${comment}`);
+      r.stars += Math.floor(Math.random()*3)+1; // เพิ่มดาวจำลอง
+      r.menu.forEach(m=>m.stars += Math.floor(Math.random()*3));
+      updateRanking();
+    }
+  }
+
+  // ------------------ Community ------------------
+  function addPost(name, avatar, content){
+    const postDiv = document.createElement('div');
+    postDiv.className = 'post';
+    postDiv.innerHTML = `<img src="${avatar}" alt="avatar"><div class="post-content"><strong>${name}</strong><br>${content}</div>`;
+    document.getElementById('posts').prepend(postDiv);
+  }
+
+  // ------------------ Ranking ------------------
+  function updateRanking(){
+    // ร้าน
+    const sortedRestaurants = [...restaurants].sort((a,b)=>b.stars - a.stars);
+    const restaurantList = document.getElementById('restaurant-ranking');
+    restaurantList.innerHTML = '';
+    sortedRestaurants.forEach(r=>{
+      const li = document.createElement('li');
+      li.innerText = `${r.name} ⭐${r.stars}`;
+      restaurantList.appendChild(li);
+    });
+
+    // เมนู
+    const allMenus = [];
+    restaurants.forEach(r=> r.menu.forEach(m=> allMenus.push({name:m.name, stars:m.stars})));
+    const sortedMenus = allMenus.sort((a,b)=>b.stars - a.stars);
+    const menuList = document.getElementById('menu-ranking');
+    menuList.innerHTML = '';
+    sortedMenus.slice(0,5).forEach(m=>{
+      const li = document.createElement('li');
+      li.innerText = `${m.name} ⭐${m.stars}`;
+      menuList.appendChild(li);
+    });
+  }
+
+  updateRanking();
+
+</script>
+
+</body>
+</html>
