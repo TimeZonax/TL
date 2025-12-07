@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +8,13 @@
 </head>
 <body>
 <div id="welcome-screen">
-  <h1>ยินดีต้อนรับนักผจญภัย!</h1>
-  <p>NPC: สวัสดี! ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
+  <h1>TastLink</h1>
+  <h3>ทีม YumYum Network</h3>
+  <p>ยินดีต้อนรับนักผจญภัยสู่โลก RPG แฟนตาซี!</p>
+  <p>NPC: สวัสดี! ข้าคือผู้เฝ้าดันเจี้ยนแห่ง TastLink ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
   <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น">
-  <p>เลือก Emoji อวาตาร์:</p>
-  <input type="text" id="avatar-emoji" placeholder="🧙‍♂️">
+  <p>เลือก Emoji อวาตาร์ของเจ้าผู้กล้า:</p>
+  <input type="text" id="avatar-emoji" placeholder="🧙‍♂️" maxlength="2">
   <p>เลือกพื้นหลังอวาตาร์ (สี):</p>
   <input type="color" id="avatar-bg" value="#1e3c72">
   <div id="avatar-preview">🧙‍♂️</div>
@@ -24,17 +26,38 @@ import { db } from './firebase.js';
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const avatarInput = document.getElementById('avatar-emoji');
+const avatarBgInput = document.getElementById('avatar-bg');
 const avatarPreview = document.getElementById('avatar-preview');
-avatarInput.addEventListener('input', ()=>{ avatarPreview.textContent = avatarInput.value || '🧙‍♂️'; });
+
+// ฟังชันอัปเดต emoji + background
+function updateAvatarPreview(){
+  avatarPreview.textContent = avatarInput.value || '🧙‍♂️';
+  avatarPreview.style.backgroundColor = avatarBgInput.value;
+}
+avatarInput.addEventListener('input', updateAvatarPreview);
+avatarBgInput.addEventListener('input', updateAvatarPreview);
 
 document.getElementById('start-btn').addEventListener('click', async ()=>{
-  const name = document.getElementById('player-name').value;
-  const emoji = document.getElementById('avatar-emoji').value || '🧙‍♂️';
-  const bg = document.getElementById('avatar-bg').value;
-  if(!name){ alert('กรุณาพิมพ์ชื่อผู้เล่น'); return; }
+  const name = document.getElementById('player-name').value.trim();
+  const emoji = avatarInput.value || '🧙‍♂️';
+  const bg = avatarBgInput.value;
   
-  await setDoc(doc(db,'players',name), { name, emoji, bg, points:0, votes:{}, reviews:[] });
-  window.location.href = 'park.html?player='+encodeURIComponent(name);
+  if(!name){ alert('กรุณาพิมพ์ชื่อผู้เล่นก่อนเริ่มผจญภัย'); return; }
+
+  try{
+    // สร้าง player doc ใน Firestore
+    await setDoc(doc(db,'players',name), { 
+      name, emoji, bg, points:0, votes:{}, reviews:[] 
+    });
+
+    alert(`ยินดีต้อนรับ ${name}! เจ้าผู้กล้าแห่งทีม YumYum Network สู่โลกของ TastLink!`);
+    
+    // ไปหน้า park.html พร้อมส่งชื่อ player
+    window.location.href = `park.html?player=${encodeURIComponent(name)}`;
+  } catch(e){
+    console.error(e);
+    alert('เกิดข้อผิดพลาด! กรุณาลองใหม่อีกครั้ง');
+  }
 });
 </script>
 </body>
