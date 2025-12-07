@@ -3,29 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TastLink - Welcome</title>
-<link rel="stylesheet" href="css/style.css">
+<title>TastLink - YumYum Network</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="welcome-screen">
-    <h1>TastLink</h1>
-    <h2>ทีม YumYum Network</h2>
-    <p class="quest-text">NPC: สวัสดี! ข้าคือผู้เฝ้าดันเจี้ยนแห่ง TastLink ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
-
+<div class="container" id="welcome-screen">
+  <div class="npc-box">
+    <h1>ยินดีต้อนรับนักผจญภัย!</h1>
+    <h2>TastLink</h2>
+    <h3>ทีม YumYum Network</h3>
+    <p>NPC: สวัสดี! ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
     <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น">
-
     <p>เลือก Emoji อวาตาร์ของเจ้า:</p>
-    <input type="text" id="avatar-emoji" maxlength="2" placeholder="🧙‍♂️">
-
+    <input type="text" id="avatar-emoji" placeholder="🧙‍♂️" maxlength="2">
     <p>เลือกพื้นหลังอวาตาร์ (สี):</p>
-    <input type="color" id="avatar-bg" value="#8B4513">
-
+    <input type="color" id="avatar-bg" value="#1e3c72">
     <div id="avatar-preview">🧙‍♂️</div>
-
-    <button id="start-btn" class="glow-button">เริ่มผจญภัย</button>
+    <button id="start-btn" class="rpg-btn">เริ่มผจญภัย</button>
+  </div>
 </div>
-
-<script src="js/effects.js"></script>
-<script src="js/main.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
+~~~
