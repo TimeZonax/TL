@@ -3,276 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🍭 TasteLink | YumYum Network</title>
-<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore-compat.js"></script>
-
-<style>
-body { margin:0; font-family:'Arial', sans-serif; background: linear-gradient(to bottom, #a0e1ff, #ffffff); overflow-x:hidden; }
-h1,h2,h3,h4 { text-align:center; margin:5px; }
-button { cursor:pointer; transition:0.2s; }
-button:hover { transform:scale(1.05); }
-
-/* Welcome */
-#welcome-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#6abfff; color:white; }
-#welcome-screen button { margin-top:20px; padding:12px 24px; font-size:18px; font-weight:bold; border:none; border-radius:12px; background:#ffcc00; color:#333; }
-
-/* Login / Avatar */
-#login-screen { display:none; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#ffe0f0; }
-#avatar-preview { font-size:64px; margin:10px; width:120px; height:120px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:3px solid #ff6f61; }
-.avatar-option { font-size:32px; margin:3px; cursor:pointer; border:2px solid #333; border-radius:12px; padding:6px; display:inline-block; }
-.avatar-option:hover { border-color:#ff6f61; }
-
-/* Park / Garden */
-#park-screen { display:none; padding:20px; }
-#player-info { display:flex; align-items:center; margin-bottom:10px; }
-#player-avatar { font-size:48px; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:10px; }
-#avatar-custom button { margin:2px; padding:4px 6px; border:none; border-radius:6px; background:#ff6f61; color:white; }
-#restaurants, #community, #garden-visual, #weekly-vote, #quest-reward, #ranking { margin:10px 0; padding:10px; border-radius:12px; background:rgba(255,255,255,0.95); box-shadow:0 3px 10px rgba(0,0,0,0.2); }
-.menu-item, .post { display:flex; align-items:center; justify-content:space-between; margin:5px 0; }
-.reward { margin:5px 0; padding:5px; background:#fff3b0; border-radius:6px; }
-#garden-visual { position:relative; min-height:300px; background:#a0d0a0; overflow:hidden; }
-
-/* Community */
-#community-input input { width:80%; padding:6px; margin-right:4px; }
-</style>
+<title>TasteLink | Welcome</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Welcome -->
 <div id="welcome-screen">
-  <h1>ยินดีต้อนรับนักผจญภัย!</h1>
-  <h2>คุณพร้อมออกเดินทางกับ YumYum Network หรือยัง? 🌳🍔</h2>
+  <h1>ยินดีต้อนรับนักผจญภัยสู่ TasteLink!</h1>
+  <h2>คุณพร้อมที่จะออกผจญภัยใน YumYum Network หรือยัง? 🌳🍔</h2>
   <button onclick="enterLogin()">เริ่มการผจญภัย!</button>
 </div>
 
-<!-- Login / Avatar -->
-<div id="login-screen">
-  <h2>ตั้งชื่อตัวละครและเลือก Emoji Avatar</h2>
-  <input type="text" id="player-name" placeholder="ชื่อผู้เล่น..." maxlength="12">
-  <div id="avatar-preview">😀</div>
-  <div id="avatar-options">
-    <span class="avatar-option" onclick="selectAvatar('😀')">😀</span>
-    <span class="avatar-option" onclick="selectAvatar('🧙‍♂️')">🧙‍♂️</span>
-    <span class="avatar-option" onclick="selectAvatar('🐱')">🐱</span>
-    <span class="avatar-option" onclick="selectAvatar('🐶')">🐶</span>
-    <span class="avatar-option" onclick="selectAvatar('🍔')">🍔</span>
-    <span class="avatar-option" onclick="selectAvatar('🍕')">🍕</span>
-  </div>
-  <label>เลือกสีพื้นหลัง:</label>
-  <input type="color" id="player-bg" value="#ffffff">
+<div id="login-screen" style="display:none;">
+  <h2>ตั้งชื่อผู้เล่นของคุณ</h2>
+  <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น..." maxlength="12">
+  
+  <h3>สร้างอวาตาร์ (Emoji)</h3>
+  <div id="avatar-preview" style="font-size:64px; text-align:center;">🧙‍♂️</div>
+  <input type="text" id="avatar-emoji" maxlength="2" placeholder="ใส่อิโมจิ เช่น 🧙‍♂️" oninput="updateAvatarPreview()">
+
+  <h3>เลือกพื้นหลังโปรไฟล์</h3>
+  <input type="color" id="avatar-bg" value="#ffd700" onchange="updateAvatarPreview()">
+
   <button onclick="startAdventure()">เข้าสู่ YumYum Park!</button>
 </div>
 
-<!-- Park Screen -->
-<div id="park-screen">
-  <div id="player-info">
-    <div id="player-avatar"></div>
-    <div>
-      <div id="player-name-display"></div>
-      <div id="avatar-custom">
-        <button onclick="changeHat()">หมวก🎩</button>
-        <button onclick="changeShirt()">เสื้อ👕</button>
-        <button onclick="changeHair()">ทรงผม💇‍♂️</button>
-        <button onclick="changeFace()">สีหน้า😃</button>
-        <button onclick="changeFrame()">กรอบ📸</button>
-      </div>
-    </div>
-  </div>
+<script type="module">
+import { db } from './firebase.js';
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-  <!-- Restaurants -->
-  <div id="restaurants"></div>
-
-  <!-- Weekly Vote -->
-  <div id="weekly-vote">
-    <h3>โหวตร้านสัปดาห์หน้า 🍴</h3>
-    <div id="vote-restaurants"></div>
-    <div id="vote-result"></div>
-  </div>
-
-  <!-- Quest / Reward -->
-  <div id="quest-reward">
-    <h3>เควสประจำวัน / รางวัล</h3>
-    <div id="quest-info"></div>
-    <button onclick="completeQuest('รีวิว')">รีวิวอาหาร +10 แต้ม</button>
-    <button onclick="completeQuest('โหวตร้าน')">โหวตร้าน +10 แต้ม</button>
-    <button onclick="completeQuest('โพสต์')">โพสต์ +10 แต้ม</button>
-    <button onclick="completeQuest('อวาตาร์')">ตกแต่ง Avatar +10 แต้ม</button>
-    <div id="reward-shop"></div>
-  </div>
-
-  <!-- Community -->
-  <div id="community">
-    <h3>ชุมชน YumYum Park 🌐</h3>
-    <div id="posts"></div>
-    <div id="community-input">
-      <input type="text" id="post-text" placeholder="พิมพ์ข้อความหรือรีวิว...">
-      <button onclick="addPost()">โพสต์</button>
-    </div>
-  </div>
-
-  <!-- Garden -->
-  <div id="garden-visual">
-    <h3>สวน YumYum 🌳</h3>
-  </div>
-
-  <!-- Ranking -->
-  <div id="ranking">
-    <h3>Top Menu ของ YumYum Park</h3>
-    <ul id="top-menu-list"></ul>
-  </div>
-</div>
-
-<footer>© 2025 TasteLink - YumYum Network</footer>
-
-<script>
-// ---------------- Firebase ----------------
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// ---------------- Welcome / Login ----------------
-let playerEmoji='😀', playerBG='#ffffff', playerName='';
-function enterLogin(){ document.getElementById('welcome-screen').style.display='none'; document.getElementById('login-screen').style.display='flex'; }
-function selectAvatar(e){ playerEmoji=e; document.getElementById('avatar-preview').textContent=e; }
-function startAdventure(){
-  let name=document.getElementById('player-name').value;
-  if(!name){ alert('กรุณาใส่ชื่อ!'); return; }
-  playerName=name; playerBG=document.getElementById('player-bg').value;
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('park-screen').style.display='block';
-  initPark();
-  loadRealtimeData();
+function enterLogin() {
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'block';
 }
 
-// ---------------- Park ----------------
-let questPoints=0, badges={รีวิว:false,โหวตร้าน:false,โพสต์:false,อวาตาร์:false};
-let restaurantData=[
-{name:'ร้าน A',menu:[{name:'ข้าวไข่เจียว',stars:0},{name:'สปาเก็ตตี้',stars:0},{name:'สลัด',stars:0}]},
-{name:'ร้าน B',menu:[{name:'พิซซ่า',stars:0},{name:'เบอร์เกอร์',stars:0},{name:'เฟรนช์ฟราย',stars:0}]},
-{name:'ร้าน C',menu:[{name:'ซูชิ',stars:0},{name:'ราเมง',stars:0},{name:'ขนมปังปิ้ง',stars:0}]},
-{name:'ร้าน D',menu:[{name:'ชา',stars:0},{name:'กาแฟ',stars:0},{name:'สมูทตี้',stars:0}]},
-{name:'ร้าน E',menu:[{name:'ไก่ทอด',stars:0},{name:'พิซซ่า',stars:0},{name:'เบอร์เกอร์',stars:0}]}
-];
-let votes={}; 
-
-function initPark(){
-  document.getElementById('player-name-display').textContent=playerName;
-  document.getElementById('player-avatar').textContent=playerEmoji;
-  document.getElementById('player-avatar').style.background=playerBG;
-  renderRestaurants(); renderVoteOptions(); renderRewards(); renderRanking();
+function updateAvatarPreview() {
+  const emoji = document.getElementById('avatar-emoji').value || '🧙‍♂️';
+  const bg = document.getElementById('avatar-bg').value;
+  const preview = document.getElementById('avatar-preview');
+  preview.textContent = emoji;
+  preview.style.backgroundColor = bg;
+  preview.style.borderRadius = '50%';
+  preview.style.width = '100px';
+  preview.style.height = '100px';
+  preview.style.lineHeight = '100px';
 }
 
-// ---------------- Restaurants ----------------
-function renderRestaurants(){
-  const container=document.getElementById('restaurants'); container.innerHTML='';
-  restaurantData.forEach((r,i)=>{
-    const div=document.createElement('div'); div.style.marginBottom='8px';
-    div.innerHTML=`<h3>${r.name}</h3>`;
-    r.menu.forEach((m,j)=>{
-      const btnId=`btn-${i}-${j}`;
-      div.innerHTML+=`<div class="menu-item">
-        <span>${m.name} ⭐${m.stars}</span>
-        <button onclick="addStar(${i},${j},'menu','${btnId}')">โหวตเมนู</button>
-      </div>`;
-    });
-    div.innerHTML+=`<button onclick="addStar(${i},-1,'restaurant')">โหวตร้านนี้</button>`;
-    container.appendChild(div);
+async function startAdventure() {
+  const name = document.getElementById('player-name').value;
+  const emoji = document.getElementById('avatar-emoji').value || '🧙‍♂️';
+  const bg = document.getElementById('avatar-bg').value;
+
+  if (!name) { alert('กรุณาพิมพ์ชื่อผู้เล่น'); return; }
+
+  // บันทึกลง Firestore
+  await setDoc(doc(db, 'players', name), {
+    name: name,
+    emoji: emoji,
+    bg: bg,
+    points: 0,
+    votes: {},
+    reviews: []
   });
+
+  // ไปหน้าสวน
+  window.location.href = 'park.html?player=' + encodeURIComponent(name);
 }
-
-function addStar(ri,mi,type,btnId){
-  const key=(mi>=0)?`menu-${ri}`:`restaurant-${ri}`;
-  if(votes[key]){ alert('คุณโหวตแล้วสำหรับอันนี้!'); return; }
-  votes[key]=true;
-  if(type==='menu') restaurantData[ri].menu[mi].stars+=1;
-  completeQuest('โหวตร้าน');
-  renderRestaurants();
-  renderRanking();
-  // Save to Firebase
-  db.collection('votes').add({player:playerName,type:type,restaurant:ri,menu:mi,timestamp:Date.now()});
-}
-
-// ---------------- Quest / Reward ----------------
-function completeQuest(type){
-  if(!badges[type]){ badges[type]=true; alert(`Badge: ${type} 🏅`); }
-  questPoints+=10;
-  document.getElementById('quest-info').textContent=`คุณได้รับ ${questPoints} แต้ม!`;
-  renderRewards();
-}
-
-function renderRewards(){
-  const shop=document.getElementById('reward-shop');
-  const items=[{name:'เสื้อสีแดง',cost:30},{name:'หมวกแฟนซี',cost:50},{name:'ทรงผมพิเศษ',cost:40},{name:'กรอบทอง',cost:60}];
-  shop.innerHTML='<h4>ร้านค้าแลกของรางวัล</h4>';
-  items.forEach(it=>{ shop.innerHTML+=`<div class="reward">${it.name} - ${it.cost} แต้ม <button onclick="buyReward('${it.name}',${it.cost})">แลก</button></div>`; });
-}
-
-function buyReward(name,cost){ if(questPoints>=cost){ questPoints-=cost; alert(`แลก ${name} เรียบร้อย!`); renderRewards(); }else alert('แต้มไม่พอ!'); }
-
-// ---------------- Community + Garden ----------------
-function addPost(){
-  const text=document.getElementById('post-text').value; if(!text) return;
-  const newPost={name:playerName,emoji:playerEmoji,text:text,bg:playerBG,timestamp:Date.now()};
-  db.collection('posts').add(newPost);
-  document.getElementById('post-text').value='';
-}
-
-function loadRealtimeData(){
-  // Community Realtime
-  db.collection('posts').orderBy('timestamp','desc').onSnapshot(snapshot=>{
-    const container=document.getElementById('posts'); container.innerHTML='';
-    const garden=document.getElementById('garden-visual'); garden.innerHTML='<h3>สวน YumYum 🌳</h3>';
-    snapshot.forEach(doc=>{
-      const p=doc.data();
-      container.innerHTML+=`<div class="post">${p.emoji} ${p.name}: ${p.text}</div>`;
-      addAvatarToGarden(p);
-    });
-  });
-}
-
-// Garden Avatar
-function addAvatarToGarden(p){
-  const garden=document.getElementById('garden-visual');
-  const avatar=document.createElement('div');
-  avatar.style.position='absolute'; avatar.style.left=Math.random()*80+'%'; avatar.style.top=Math.random()*60+'%';
-  avatar.style.textAlign='center'; avatar.style.fontSize='32px';
-  const av=document.createElement('div'); av.textContent=p.emoji; av.style.background=p.bg; av.style.borderRadius='50%';
-  av.style.width='50px'; av.style.height='50px'; av.style.display='flex'; av.style.alignItems='center'; av.style.justifyContent='center'; avatar.appendChild(av);
-  const bubble=document.createElement('div'); bubble.textContent=p.text; bubble.style.position='absolute'; bubble.style.top='-30px';
-  bubble.style.left='50%'; bubble.style.transform='translateX(-50%)'; bubble.style.background='rgba(255,255,255,0.9)'; bubble.style.padding='2px 6px'; bubble.style.borderRadius='6px'; avatar.appendChild(bubble);
-  garden.appendChild(avatar); setTimeout(()=>{avatar.remove();},15000);
-}
-
-// Weekly Vote
-function renderVoteOptions(){
-  const voteDiv=document.getElementById('vote-restaurants'); voteDiv.innerHTML='';
-  restaurantData.forEach((r,i)=>{
-    const btn=document.createElement('button'); btn.textContent=r.name; btn.onclick=()=>addStar(i,-1,'restaurant'); voteDiv.appendChild(btn);
-  });
-}
-
-// Ranking
-function renderRanking(){
-  const list=document.getElementById('top-menu-list'); list.innerHTML='';
-  let allMenus=[]; restaurantData.forEach(r=>r.menu.forEach(m=>allMenus.push({name:m.name,stars:m.stars})));
-  allMenus.sort((a,b)=>b.stars-a.stars); allMenus.slice(0,5).forEach((m,i)=>{ list.innerHTML+=`<li>${i+1}. ${m.name} ⭐${m.stars}</li>`; });
-}
-
-// ---------------- Avatar Custom (placeholder functions) ----------------
-function changeHat(){ alert('เปลี่ยนหมวก'); }
-function changeShirt(){ alert('เปลี่ยนเสื้อ'); }
-function changeHair(){ alert('เปลี่ยนทรงผม'); }
-function changeFace(){ alert('เปลี่ยนสีหน้า'); }
-function changeFrame(){ alert('เปลี่ยนกรอบ'); }
-
 </script>
+
 </body>
 </html>
