@@ -3,31 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>โลก RPG - TastLink</title>
+<title>TastLink - Park</title>
 <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
 <div id="park-screen">
-  <div id="player-info">
-    <div id="avatar-display"></div>
-    <h3 id="player-name-display"></h3>
-    <p id="player-points">คะแนน: 0</p>
-  </div>
-  <div id="quests">
-    <h2>เควสต์ของวันนี้</h2>
-    <p>1. รีวิวอาหาร</p>
-    <p>2. โหวตร้านอาหารที่อยากให้มาเปิด</p>
-    <p>3. พูดคุยกับนักผจญภัยอื่นในคอมมูนิตี้</p>
-  </div>
-  <div id="shops">
-    <h2>ร้านค้า</h2>
-    <div class="shop-list"></div>
-  </div>
-  <div id="garden">
     <h2>สวนของนักผจญภัย</h2>
-    <div id="garden-display"></div>
-  </div>
+    <div id="player-info">
+        <div id="player-avatar">🧙‍♂️</div>
+        <span id="player-name-display">ผู้เล่น</span>
+    </div>
+
+    <h3>ร้านค้าแนะนำวันนี้</h3>
+    <div id="shops-container">
+        <!-- ร้านค้าจะถูกสร้างจาก JS -->
+    </div>
+
+    <h3>คอมมูนิตี้แชท</h3>
+    <div id="chat-box"></div>
+    <input type="text" id="chat-input" placeholder="พิมพ์ข้อความ...">
+    <button id="chat-send" class="btn-glow">ส่งข้อความ</button>
 </div>
+
+<script src="data.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
