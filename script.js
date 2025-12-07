@@ -1,56 +1,72 @@
-// index.html
-if(document.getElementById('avatar-emoji')){
-    const avatarInput = document.getElementById('avatar-emoji');
-    const avatarBgInput = document.getElementById('avatar-bg');
-    const avatarPreview = document.getElementById('avatar-preview');
-    function updateAvatar(){avatarPreview.textContent = avatarInput.value||'🧑'; avatarPreview.style.backgroundColor = avatarBgInput.value;}
-    avatarInput.addEventListener('input',updateAvatar);
-    avatarBgInput.addEventListener('input',updateAvatar);
-    document.getElementById('start-btn').addEventListener('click',()=>{
-        const name=document.getElementById('player-name').value.trim();
-        if(!name){alert('กรุณาพิมพ์ชื่อผู้เล่น');return;}
-        const player={name,emoji:avatarInput.value||'🧑',bg:avatarBgInput.value};
-        localStorage.setItem('player',JSON.stringify(player));
-        window.location.href='dashboard.html';
-    });
+// ... โค้ดเดิม (Ranking, Chat, updateShopStatuses) ...
+
+// --- [Avatar Customization Logic] ---
+let currentAvatarLook = 'default';
+
+/**
+ * ฟังก์ชันเปิด Modal แต่งตัว เมื่อคลิกอวาตาร์
+ */
+document.querySelector('.avatar-display').addEventListener('click', () => {
+    document.getElementById('avatar-modal').style.display = 'block';
+    // อัปเดต Preview ให้ตรงกับสถานะปัจจุบัน
+    document.getElementById('custom-avatar-display').style.background = currentAvatarLook;
+});
+
+/**
+ * ฟังก์ชันปิด Modal
+ */
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
 }
 
-// dashboard.html
-if(document.getElementById('player-avatar')){
-    const player=JSON.parse(localStorage.getItem('player'))||{name:'นักผจญภัย',emoji:'🧑',bg:'#1976d2'};
-    document.getElementById('player-display-name').textContent=player.name;
-    const avatarDiv=document.getElementById('player-avatar');
-    avatarDiv.textContent=player.emoji; avatarDiv.style.backgroundColor=player.bg;
+/**
+ * ฟังก์ชันจำลองการเปลี่ยนรูปลักษณ์อวาตาร์
+ * @param {string} lookType 
+ */
+function changeAvatarLook(lookType) {
+    const avatarDisplay = document.getElementById('custom-avatar-display');
+    const headerAvatar = document.querySelector('.avatar-display');
 
-    const restaurants=[
-        {name:'ร้าน A',menu:[{name:'เมนู1',price:120},{name:'เมนู2',price:150},{name:'เมนู3',price:100}]},
-        {name:'ร้าน B',menu:[{name:'เมนู1',price:80},{name:'เมนู2',price:90},{name:'เมนู3',price:70}]},
-        {name:'ร้าน C',menu:[{name:'เมนู1',price:50},{name:'เมนู2',price:60},{name:'เมนู3',price:70}]},
-        {name:'ร้าน D',menu:[{name:'เมนู1',price:200},{name:'เมนู2',price:220},{name:'เมนู3',price:180}]},
-        {name:'ร้าน E',menu:[{name:'เมนู1',price:300},{name:'เมนู2',price:250},{name:'เมนู3',price:280}]}
-    ];
-    const restaurantContainer=document.getElementById('restaurants');
-    restaurants.forEach((r,i)=>{
-        const card=document.createElement('div'); card.className='restaurant-card';
-        card.innerHTML=`<h4>${r.name}</h4>`;
-        r.menu.forEach(m=>{card.innerHTML+=`<div>${m.name} - ${m.price}฿</div>`;});
-        const voteBtn=document.createElement('button'); voteBtn.textContent='โหวตร้านนี้'; voteBtn.className='glow-btn';
-        voteBtn.addEventListener('click',()=>{if(!localStorage.getItem(`vote_restaurant_${i}`)){localStorage.setItem(`vote_restaurant_${i}`,true);alert(`โหวตร้าน ${r.name} เรียบร้อย!`);}else{alert('โหวตร้านนี้ไปแล้ว');}});
-        card.appendChild(voteBtn);
-        restaurantContainer.appendChild(card);
-    });
-
-    // Chat
-    const chatBox=document.getElementById('chat-box'); const chatInput=document.getElementById('chat-input'); const chatSend=document.getElementById('chat-send');
-    function loadChat(){const messages=JSON.parse(localStorage.getItem('chat')||'[]');chatBox.innerHTML='';messages.forEach(m=>{const div=document.createElement('div');div.textContent=m;chatBox.appendChild(div);});chatBox.scrollTop=chatBox.scrollHeight;}
-    loadChat();
-    chatSend.addEventListener('click',()=>{const msg=chatInput.value.trim();if(!msg)return;const messages=JSON.parse(localStorage.getItem('chat')||'[]');messages.push(`${player.name}: ${msg}`);localStorage.setItem('chat',JSON.stringify(messages));chatInput.value='';loadChat();});
+    if (lookType === 'blue') {
+        // จำลองการเปลี่ยนสี/สไตล์ (Blue Hat)
+        currentAvatarLook = 'linear-gradient(135deg, #3498db, #2980b9)';
+    } else if (lookType === 'green') {
+        // จำลองการเปลี่ยนสี/สไตล์ (Green Hair)
+        currentAvatarLook = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+    }
+    
+    // อัปเดต Preview ทันที
+    avatarDisplay.style.background = currentAvatarLook;
 }
 
-// garden.html
-if(document.getElementById('garden')){
-    const garden=document.getElementById('garden');
-    const players=JSON.parse(localStorage.getItem('players_reviews')||'[]');
-    players.forEach(p=>{const div=document.createElement('div'); div.className='garden-avatar';
-    div.innerHTML=`<div style="font-size:50px;background:${p.bg};border-radius:10px;">${p.emoji}</div><span>${p.name}: ${p.review}</span>`; garden.appendChild(div);});
+/**
+ * ฟังก์ชันจำลองการบันทึกการแต่งตัว
+ */
+function saveAvatar() {
+    // นำการตั้งค่าไปใช้กับอวาตาร์ใน Header
+    document.querySelector('.avatar-display').style.background = currentAvatarLook;
+    closeModal('avatar-modal');
+    showXPEffect("+10 XP! (แต่งตัว)"); // ได้ XP จากการแต่งตัว!
 }
+
+// --- [Real-time Alert Logic] ---
+
+/**
+ * ฟังก์ชันจำลองการแจ้งเตือนฉุกเฉิน (The WOW Moment)
+ */
+function triggerShopAlert(shopName, reason) {
+    const alertModal = document.getElementById('alert-modal');
+    document.getElementById('alert-message').textContent = `ร้าน ${shopName} ${reason}! กรุณาเลือกซื้อร้านอื่นแทน`;
+    alertModal.style.display = 'block';
+    
+    // หากต้องการให้เด่นกว่าเดิม ให้เพิ่มลูกเล่น
+    alertModal.classList.add('pulse-alert'); 
+}
+
+// เพิ่มการเรียกใช้ Alert หลังผ่านไป 15 วินาที
+document.addEventListener('DOMContentLoaded', () => {
+    // ... โค้ดเดิม ...
+    setTimeout(() => {
+        triggerShopAlert("ร้านก๋วยเตี๋ยวเรือเทพ", "ปิดทำการกะทันหัน (วัตถุดิบหมด)");
+    }, 15000); // จะเด้ง Alert ขึ้นมาหลังเข้าหน้าเว็บ 15 วินาที
+});
