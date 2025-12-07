@@ -1,59 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-body {
-    font-family: 'Press Start 2P', cursive;
-    background-color: #f5f1e7; /* โทนสีไม้/โรงเตี๊ยม */
-    margin:0; padding:0;
-}
-
-h1,h2,h3,p {
-    margin: 10px;
-}
-
-.quest-text {
-    color: #FFD700; /* ตัวอักษรสีเหลืองสำหรับเควส */
-    background-color: #1e3c72; /* กล่องสีน้ำเงิน */
-    padding: 10px;
-    border-radius: 8px;
-}
-
-#avatar-preview {
-    font-size: 50px;
-    width: 80px;
-    height: 80px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    border-radius: 10px;
-    margin: 10px 0;
-}
-
-.glow-button {
-    background-color: #8B4513;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #FFD700;
-    transition: all 0.2s ease;
-}
-
-.glow-button:hover {
-    box-shadow: 0 0 20px #FFD700, 0 0 30px #FFA500;
-    transform: translateY(-3px);
-}
-
-.restaurant-card {
-    background-color: #deb887;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px;
-    display:inline-block;
-    width: 220px;
-}
-
-.menu-item {
-    margin: 5px 0;
-}
+body {margin:0; font-family:'Roboto Mono', monospace; background:#f7f7f7; color:#333;}
+.container {max-width:1000px; margin:0 auto; padding:20px;}
+h1,h3 {text-align:center; color:#1976d2;}
+input[type="text"], input[type="color"] {width:100%; padding:10px; margin:5px 0; font-size:16px; border-radius:6px; border:1px solid #ccc;}
+#avatar-preview {font-size:60px; width:100px; height:100px; line-height:100px; text-align:center; margin:10px auto; border-radius:12px; background:#1976d2; color:white;}
+.glow-btn {background:#1976d2; color:white; padding:12px 24px; margin:10px auto; display:block; border:none; font-size:18px; border-radius:8px; cursor:pointer; transition:0.3s;}
+.glow-btn:hover {box-shadow:0 0 10px #42a5f5, 0 0 20px #42a5f5; transform:translateY(-2px);}
+header {display:flex; align-items:center; margin-bottom:20px;}
+#player-avatar {width:60px; height:60px; font-size:36px; text-align:center; line-height:60px; border-radius:8px; background:#1976d2; color:white; margin-right:15px;}
+#restaurants {display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px;}
+.restaurant-card {background:white; border-radius:10px; padding:15px; box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.restaurant-card h4 {margin:0 0 10px 0; color:#1976d2;}
+#chat-box {background:white; height:180px; overflow-y:auto; padding:10px; border-radius:8px; margin-bottom:10px;}
+.chat-input-group {display:flex; gap:10px;}
+#chat-input {flex:1;}
+#garden {display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:20px;}
+.garden-avatar {text-align:center;}
+.garden-avatar span {display:block; margin-top:5px;}
