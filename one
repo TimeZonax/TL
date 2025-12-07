@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>YumYum — TasteLink Park (Prototype)</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- Minimal Luxury: Black & Gold theme -->
+<style>
+:root{
+  --bg:#0b0b0b;
+  --card:#0f0f10;
+  --muted:#bdbdbd;
+  --gold:#c9a84b;
+  --accent:#ffd97d;
+  --glass: rgba(255,255,255,0.03);
+  --radius:14px;
+  --shadow: 0 8px 30px rgba(0,0,0,0.6);
+  --safe-pad: env(safe-area-inset-bottom);
+  --font-sans: 'Inter', system-ui, -apple-system, "SF Pro Text", "Helvetica Neue", Arial;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#040404 0%, #0b0b0b 100%);color:#fff;font-family:var(--font-sans)}
+a{color:var(--gold);text-decoration:none}
+.container{max-width:720px;margin:0 auto;padding:16px;padding-bottom:calc(16px + var(--safe-pad))}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.logo{
+  width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#ffd77a);
+  display:flex;align-items:center;justify-content:center;color:#111;font-weight:800;font-size:18px;box-shadow:0 6px 18px rgba(201,168,75,0.12)
+}
+.h-title{font-weight:700;font-size:18px}
+.h-sub{color:var(--muted);font-size:12px}
+
+/* NAV */
+.nav{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-bottom:12px}
+.tab{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:999px;color:var(--muted);font-weight:600; font-size:13px}
+.tab.active{background:linear-gradient(90deg, rgba(201,168,75,0.12), rgba(255,217,125,0.06));color:var(--gold);border-color:rgba(201,168,75,0.22);box-shadow:var(--shadow)}
+
+/* main card */
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);padding:12px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
+.small{padding:8px}
+.center{text-align:center}
+
+/* Park view */
+.park{
+  margin-top:12px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+  height:420px;border-radius:12px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.03)
+}
+.park .ground{
+  position:absolute;left:0;right:0;bottom:0;height:38%;background:linear-gradient(180deg,#0f0f10,#060606);transform:skewY(-3deg);transform-origin:left;opacity:0.9
+}
+.park .tree{
+  position:absolute;left:8px;top:18px;width:72px;height:72px;border-radius:12px;background:linear-gradient(180deg,#153, #0b5345);opacity:0.06;filter:blur(6px)
+}
+
+/* Avatar */
+.avatar{
+  position:absolute;bottom:10%;width:64px;height:64px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#111;
+  background:linear-gradient(180deg,var(--accent),var(--gold));box-shadow:0 8px 24px rgba(201,168,75,0.12);transition:transform .25s ease, box-shadow .25s;cursor:pointer;border:2px solid rgba(255,255,255,0.06)
+}
+.avatar:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 16px 40px rgba(201,168,75,0.18)}
+.avatar.small{width:44px;height:44px;font-size:18px}
+
+/* bubble */
+.bubble{
+  position:absolute;transform:translate(-50%,-120%);min-width:120px;padding:8px 12px;border-radius:12px;background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.45));border:1px solid rgba(255,255,255,0.04);color:#fff;font-size:13px;opacity:0;pointer-events:none;
+  transition:opacity .25s ease, transform .18s ease;
+}
+.bubble.visible{opacity:1;pointer-events:auto;transform:translate(-50%,-140%)}
+
+/* feed */
+.feed{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.post{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);display:flex;gap:10px}
+.post .meta{font-size:12px;color:var(--muted)}
+
+/* restaurants */
+.rest-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+.rest{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);display:flex;gap:8px;align-items:center;cursor:pointer}
+.rest img{width:56px;height:56px;border-radius:8px;object-fit:cover}
+.rest .name{font-weight:700}
+.tag{padding:6px 8px;border-radius:999px;background:rgba(201,168,75,0.12);color:var(--gold);font-weight:700;font-size:12px}
+
+/* chat */
+.chat{
+  position:fixed;right:12px;bottom:calc(12px + var(--safe-pad));width:92%;max-width:420px;z-index:60;
+}
+.chat-box{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:8px;border:1px solid rgba(255,255,255,0.02);box-shadow:0 12px 30px rgba(0,0,0,0.6)}
+.chat-messages{max-height:220px;overflow:auto;padding:6px;display:flex;flex-direction:column;gap:6px}
+.chat-input{display:flex;gap:8px;margin-top:8px}
+.input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
+
+/* small */
+.row{display:flex;gap:8px;align-items:center}
+.muted{color:var(--muted);font-size:13px}
+
+/* bottom nav */
+.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:8px;border-radius:999px;display:flex;gap:8px;z-index:70;border:1px solid rgba(255,255,255,0.03)}
+.icon-btn{width:48px;height:48px;border-radius:12px;background:transparent;display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;border:1px solid rgba(255,255,255,0.02)}
+.icon-btn.active{color:var(--gold);border-color:rgba(201,168,75,0.18);box-shadow:0 8px 24px rgba(201,168,75,0.06)}
+
+/* responsive */
+@media(min-width:720px){
+  .container{padding:24px}
+  .park{height:520px}
+  .rest-list{grid-template-columns:repeat(3,1fr)}
+}
+
+/* simple fade-in */
+.fade-in{animation:fadeIn .45s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo">TL</div>
+    <div>
+      <div class="h-title">TasteLink — YumYum Park</div>
+      <div class="h-sub">Real Voices · Real Taste — Virtual Park (Mobile)</div>
+    </div>
+    <div style="margin-left:auto" id="userArea" class="muted">ลงชื่อเข้าใช้</div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <div style="display:flex;gap:8px">
+      <div id="tabPark" class="tab active" onclick="showPage('park')">สวน (Park)</div>
+      <div id="tabList" class="tab" onclick="showPage('list')">ร้าน</div>
+      <div id="tabFeed" class="tab" onclick="showPage('feed')">คอมมิวนิตี้</div>
+    </div>
+    <div class="row">
+      <div class="tag">Gold • Beta</div>
+    </div>
+  </div>
+
+  <!-- Avatar creation card -->
+  <div id="cardCreate" class="card small fade-in" style="display:none;margin-bottom:12px">
+    <div style="display:flex;gap:12px;align-items:center">
+      <div id="previewAvatar" style="width:56px;height:56px;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;color:#111;font-weight:700;font-size:26px"></div>
+      <div style="flex:1">
+        <div style="font-weight:700">สร้าง Avatar ของคุณ</div>
+        <div class="muted">ตั้งชื่อ และเลือกรูปลักษณ์ (ข้อมูลเก็บในเครื่อง)</div>
+      </div>
+      <div>
+        <button class="tab" onclick="openCreate()">แก้ไข</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Park -->
+  <div id="page-park">
+    <div class="card park" id="parkArea">
+      <div class="tree"></div>
+      <div class="ground"></div>
+      <!-- avatars inserted by JS -->
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <div class="card" style="flex:1">
+        <div style="font-weight:700">ชุมชนรอบ ๆ</div>
+        <div class="muted">คนที่เพิ่งรีวิวจะปรากฏบนสวนและ feed</div>
+      </div>
+      <div class="card small" style="width:120px;text-align:center">
+        <div style="font-weight:700">คะแนนรวม</div>
+        <div id="scoreTotal" class="muted">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div id="page-list" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:700">ร้านแนะนำใกล้คุณ</div>
+        <div class="muted">Tap to view detail</div>
+      </div>
+
+      <div class="rest-list" id="restList"></div>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div id="page-feed" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:700">Community Feed</div>
+        <div class="muted">Latest reviews & posts</div>
+      </div>
+      <div class="feed" id="feedList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chat (floating) -->
+<div class="chat" id="chatRoot" style="display:none">
+  <div class="chat-box">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-weight:700">กลุ่ม Chat</div>
+      <div class="muted">iOS • Mobile</div>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+      <input id="chatInput" class="input" placeholder="พิมพ์ข้อความ..." />
+      <button class="btn" onclick="sendChat()">ส่ง</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <div id="btnPark" class="icon-btn active" onclick="showPage('park')">🏞️</div>
+  <div id="btnList" class="icon-btn" onclick="showPage('list')">🍽️</div>
+  <div id="btnFeed" class="icon-btn" onclick="showPage('feed')">💬</div>
+  <div id="btnCreate" class="icon-btn" onclick="openCreate()">✏️</div>
+</div>
+
+<!-- Create / Modal (simple) -->
+<div id="modal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;z-index:100">
+  <div style="width:100%;max-width:520px;border-radius:12px;padding:16px;background:linear-gradient(180deg,#101010,#0b0b0b);border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 60px rgba(0,0,0,0.7)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-weight:800">สร้าง / แก้ไข Avatar</div>
+      <div class="muted" style="font-size:13px">ข้อมูลเก็บในเครื่อง</div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center">
+      <div id="modalPreview" style="width:84px;height:84px;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;color:#111;font-weight:800;font-size:36px"></div>
+      <div style="flex:1">
+        <label class="muted">ชื่อที่จะแสดง</label>
+        <input id="avatarName" class="input" placeholder="เช่น Time" style="background:transparent;border:1px solid rgba(255,255,255,0.04);color:white"/>
+        <label class="muted" style="margin-top:8px">เลือกรูปหน้า</label>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button class="tab" onclick="chooseFace('🙂')">🙂</button>
+          <button class="tab" onclick="chooseFace('😎')">😎</button>
+          <button class="tab" onclick="chooseFace('😋')">😋</button>
+          <button class="tab" onclick="chooseFace('🦊')">🦊</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn-outline" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn" onclick="saveAvatar()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- bubble template (hidden) -->
+<div id="bubbleTemplate" style="display:none">
+  <div class="bubble"></div>
+</div>
+
+<script>
+/* ------------------------------
+  Prototype JS: Park + Avatar + Feed
+   - Single-file prototype (localStorage)
+   - Mobile-first (iOS-friendly)
+   - Animations, avatar bubbles, chat
+   ------------------------------ */
+
+const STORAGE_KEY = 'taste_link_proto_v2';
+
+// sample restaurants data
+const DEFAULT = {
+  user: null,
+  restaurants: [
+    {id:'r1',name:'ก๋วยเตี๋ยวเจ๊แดง',img:'https://images.unsplash.com/photo-1604908176545-4e9e3b2a7f3c?q=80&w=800&auto=format&fit=crop',category:'อาหารไทย',rating:4.3,menus:[{name:'ก๋วยเตี๋ยวน้ำตก',price:40},{name:'เกาเหลาหมู',price:45}]},
+    {id:'r2',name:'ฮาลาลซอสเดช',img:'https://images.unsplash.com/photo-1601050690594-6d1b1c1f3b02?q=80&w=800&auto=format&fit=crop',category:'ฮาลาล',rating:4.6,menus:[{name:'ข้าวหน้าไก่ฮาลาล',price:55}]},
+    {id:'r3',name:'ข้าวแกงแม่ลิน',img:'https://images.unsplash.com/photo-1542736667-069246bdbc27?q=80&w=800&auto=format&fit=crop',category:'ข้าวแกง',rating:4.1,menus:[{name:'ข้าวหมูทอด',price:50}]}
+  ],
+  avatars: [
+    // sample avatars to populate the park (other users)
+    {id:'a1',name:'Neko',face:'😺',x:14,y:60,post:'ข้าวมันไก่อร่อยมาก!'},
+    {id:'a2',name:'Mint',face:'😎',x:40,y:62,post:'แนะนำแกงเขียวหวานร้านฮาลาล!'},
+    {id:'a3',name:'JJ',face:'🙂',x:72,y:58,post:'ก๋วยเตี๋ยวน้ำตก เจ้มจ้น'}
+  ],
+  feed: [
+    // feed posts: user/ avatarId, restId, text
+  ],
+  chat: []
+};
+
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || DEFAULT;
+saveState();
+
+// UI refs
+const parkArea = document.getElementById('parkArea');
+const feedList = document.getElementById('feedList');
+const restList = document.getElementById('restList');
+const userArea = document.getElementById('userArea');
+const chatRoot = document.getElementById('chatRoot');
+
+// load initial
+renderUser();
+renderPark();
+renderRestList();
+renderFeed();
+renderScore();
+initChatUI();
+
+// ========== helpers ==========
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function uid(prefix='id'){ return prefix + '_' + Math.random().toString(36).slice(2,9); }
+function showPage(page){
+  // tabs and bottom nav active state
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tabPark').classList.remove('active');
+  document.getElementById('tabList').classList.remove('active');
+  document.getElementById('tabFeed').classList.remove('active');
+  document.getElementById('btnPark').classList.remove('active');
+  document.getElementById('btnList').classList.remove('active');
+  document.getElementById('btnFeed').classList.remove('active');
+
+  if(page==='park'){
+    document.getElementById('page-park').style.display='block';
+    document.getElementById('page-list').style.display='none';
+    document.getElementById('page-feed').style.display='none';
+    document.getElementById('tabPark').classList.add('active');
+    document.getElementById('btnPark').classList.add('active');
+  } else if(page==='list'){
+    document.getElementById('page-park').style.display='none';
+    document.getElementById('page-list').style.display='block';
+    document.getElementById('page-feed').style.display='none';
+    document.getElementById('tabList').classList.add('active');
+    document.getElementById('btnList').classList.add('active');
+  } else {
+    document.getElementById('page-park').style.display='none';
+    document.getElementById('page-list').style.display='none';
+    document.getElementById('page-feed').style.display='block';
+    document.getElementById('tabFeed').classList.add('active');
+    document.getElementById('btnFeed').classList.add('active');
+  }
+}
+
+// ===== avatar create/edit =====
+function openCreate(){
+  document.getElementById('modal').style.display='flex';
+  // fill modal preview
+  const preview = document.getElementById('modalPreview');
+  const user = state.user || {face:'🙂',name:''};
+  preview.textContent = user.face || '🙂';
+  document.getElementById('avatarName').value = user.name || '';
+}
+function closeModal(){ document.getElementById('modal').style.display='none'; }
+function chooseFace(f){ document.getElementById('modalPreview').textContent = f; }
+function saveAvatar(){
+  const name = document.getElementById('avatarName').value.trim() || ('User'+Math.floor(Math.random()*1000));
+  const face = document.getElementById('modalPreview').textContent || '🙂';
+  state.user = {id:uid('u'),name,face,x:50,y:70};
+  saveState(); closeModal(); renderUser(); renderPark();
+  document.getElementById('cardCreate').style.display='block';
+  document.getElementById('chatRoot').style.display='block';
+}
+
+// ========== render functions ==========
+function renderUser(){
+  userArea.innerHTML = '';
+  if(!state.user){
+    userArea.textContent = 'ยังไม่ได้ลงชื่อ';
+    document.getElementById('cardCreate').style.display='none';
+    document.getElementById('chatRoot').style.display='none';
+    return;
+  }
+  const d = document.createElement('div'); d.style.display='flex';d.style.gap='10px';d.style.alignItems='center';
+  const av = document.createElement('div'); av.style.width='36px';av.style.height='36px';av.style.borderRadius='8px';av.style.background='linear-gradient(180deg,var(--accent),var(--gold))';av.style.display='flex';av.style.alignItems='center';av.style.justifyContent='center';av.style.color='#111';av.style.fontWeight='800';av.textContent=state.user.face;
+  const nm = document.createElement('div'); nm.textContent=state.user.name; nm.style.fontWeight='700';
+  d.appendChild(av); d.appendChild(nm); userArea.appendChild(d);
+  document.getElementById('cardCreate').style.display='block';
+  document.getElementById('chatRoot').style.display='block';
+}
+
+function renderPark(){
+  // clear existing avatars (except tree/ground)
+  [...parkArea.querySelectorAll('.avatar')].forEach(n=>n.remove());
+
+  // render other avatars from state.avatars + user avatar
+  const all = [...state.avatars];
+  if(state.user) all.push({...state.user,id:state.user.id}); // push user as avatar
+  all.forEach(av=>{
+    const el = document.createElement('div');
+    el.className='avatar fade-in';
+    el.style.left = av.x + '%';
+    el.style.bottom = av.y + '%';
+    el.style.transform = 'translate(-50%,0)';
+    el.dataset.id = av.id;
+    el.innerHTML = `<span>${av.face}</span>`;
+    parkArea.appendChild(el);
+
+    // bubble for the avatar's post or name
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = av.post || av.name || '';
+    parkArea.appendChild(bubble);
+    // position bubble above avatar
+    function positionBubble(){
+      const r = el.getBoundingClientRect();
+      const p = parkArea.getBoundingClientRect();
+      bubble.style.left = (r.left + r.width/2 - p.left) + 'px';
+      bubble.style.top = (r.top - p.top) + 'px';
+    }
+    positionBubble();
+    window.addEventListener('resize', positionBubble);
+    // click to toggle bubble / open detail
+    el.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      // show bubble briefly
+      document.querySelectorAll('.bubble').forEach(b=>b.classList.remove('visible'));
+      bubble.classList.add('visible');
+      setTimeout(()=>{ bubble.classList.remove('visible'); }, 4200);
+      // if this is a user avatar, open a quick action to post review
+      if(state.user && av.id === state.user.id){
+        openPostQuick();
+      } else {
+        // show mini profile (simulate listening)
+        // open details of nearest restaurant? (proto) just show on feed highlight
+        highlightFeedByAvatar(av);
+      }
+    });
+
+    // gentle floating animation (random)
+    const rdx = (Math.random()*6 - 3);
+    el.animate([
+      { transform: 'translate(-50%, 0px) translateX(0px)' },
+      { transform: `translate(-50%, -6px) translateX(${rdx}px)` },
+      { transform: 'translate(-50%, 0px) translateX(0px)' }
+    ], { duration: 3000 + Math.random()*2000, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+
+  });
+}
+
+function highlightFeedByAvatar(av){
+  // find feed entries that include av.post and scroll to that post
+  const matches = state.feed.filter(f=>f.avatarId === av.id || f.text?.includes(av.post));
+  if(matches.length){
+    showPage('feed');
+    setTimeout(()=>{ const el = document.querySelector(`.post[data-id="${matches[0].id}"]`); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },200);
+  } else {
+    // show small toast
+    toast('ไม่มีโพสต์ตรงกับ avatar นี้');
+  }
+}
+
+function renderRestList(){
+  restList.innerHTML = '';
+  state.restaurants.forEach(r=>{
+    const el = document.createElement('div');
+    el.className = 'rest fade-in';
+    el.innerHTML = `<img src="${r.img}"><div style="flex:1"><div class="name">${r.name}</div><div class="muted">${r.category}</div></div><div style="text-align:right"><div class="tag">⭐ ${r.rating}</div></div>`;
+    el.addEventListener('click', ()=> openRestaurant(r.id));
+    restList.appendChild(el);
+  });
+}
+
+function openRestaurant(rid){
+  // simple detail modal (use prompt for prototype)
+  const r = state.restaurants.find(x=>x.id===rid);
+  const menus = r.menus.map(m=>`${m.name} — ${m.price} ฿`).join('\n');
+  const action = confirm(`${r.name}\n\nเมนู:\n${menus}\n\nกดตกลงเพื่อรีวิวร้านนี้ (Prototype)`);
+  if(action){
+    // open quick post with recommended text
+    openPostQuick(rid);
+  }
+}
+
+function renderFeed(){
+  feedList.innerHTML = '';
+  if(state.feed.length === 0){
+    feedList.innerHTML = `<div class="muted">ยังไม่มีโพสต์ ลองโพสต์รีวิวแรก!</div>`;
+    return;
+  }
+  state.feed.slice().reverse().forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'post';
+    el.dataset.id = p.id;
+    el.innerHTML = `<div style="width:48px;text-align:center"><div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;color:#111;font-weight:800">${p.face}</div></div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800">${p.name}</div>
+          <div class="muted" style="font-size:12px">${new Date(p.ts).toLocaleTimeString()}</div>
+        </div>
+        <div style="margin-top:6px">${p.text}</div>
+        <div class="muted" style="margin-top:8px;font-size:12px">รีวิว: ${p.rating ? '⭐'.repeat(p.rating) : '-'}</div>
+      </div>`;
+    feedList.appendChild(el);
+  });
+}
+
+function renderScore(){
+  const total = state.restaurants.reduce((s,r)=>s + (r.rating || 0),0).toFixed(1);
+  document.getElementById('scoreTotal').textContent = total;
+}
+
+/* quick post flow */
+function openPostQuick(rid=null){
+  // simple prompt-based quick post for prototype
+  if(!state.user){ toast('กรุณาสร้าง Avatar ก่อน'); openCreate(); return; }
+  const rest = rid ? (state.restaurants.find(r=>r.id===rid).name) : prompt('ทานร้านไหน? (พิมพ์ชื่อร้านหรือว่าง)') || 'ร้านทั่วไป';
+  const text = prompt('เขียนรีวิวสั้น ๆ (ตัวอย่าง: อร่อยมาก เสิร์ฟไว)') || 'อร่อยดี';
+  const rating = parseInt(prompt('ให้ดาว (1-5)', '5')) || 5;
+  const post = { id: uid('post'), avatarId: state.user.id, name: state.user.name, face: state.user.face, text, rating, rest: rest, ts: Date.now() };
+  state.feed.push(post);
+  // attach to user avatar for bubble show
+  state.user.post = text;
+  // update avatars array with user's avatar if not present
+  const idx = state.avatars.findIndex(a=>a.id===state.user.id);
+  if(idx===-1) state.avatars.push({...state.user});
+  saveState(); renderFeed(); renderPark();
+  toast('โพสต์เรียบร้อย — ขึ้นในสวนและ feed แล้ว');
+}
+
+/* toast */
+function toast(msg){ const t = document.createElement('div'); t.className='card small center'; t.style.position='fixed'; t.style.left='50%'; t.style.transform='translateX(-50%)'; t.style.bottom='110px'; t.style.zIndex=999; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2000); }
+
+/* Chat functions */
+function initChatUI(){
+  document.getElementById('chatRoot').style.display = state.user ? 'block' : 'none';
+  renderChatMessages();
+}
+function renderChatMessages(){
+  const box = document.getElementById('chatMessages');
+  if(!box) return;
+  box.innerHTML = '';
+  state.chat.slice().reverse().forEach(c=>{
+    const el = document.createElement('div');
+    el.style.padding='6px 8px';el.style.borderRadius='10px';el.style.background='rgba(255,255,255,0.02)';el.style.fontSize='13px';
+    el.innerHTML = `<strong style="color:var(--gold)">${c.name}</strong> <span class="muted" style="font-size:12px">• ${new Date(c.ts).toLocaleTimeString()}</span><div style="margin-top:6px">${c.text}</div>`;
+    box.appendChild(el);
+  });
+}
+function sendChat(){
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if(!text){ return; }
+  const c = { id: uid('c'), name: (state.user?state.user.name:'Guest'), text, ts: Date.now() };
+  state.chat.push(c); saveState(); renderChatMessages(); inp.value=''; toast('ส่งข้อความแล้ว');
+}
+
+/* Utilities */
+function toastLong(msg){ alert(msg); }
+
+/* init */
+showPage('park');
+</script>
+
+</body>
+</html>
