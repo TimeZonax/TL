@@ -1,70 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TastLink - Park</title>
-<link rel="stylesheet" href="style.css">
+<title>สวน RPG - TastLink</title>
+<style>
+  body{
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(to top, #2a2a72, #009ffd);
+    margin:0;
+    color:#fff;
+  }
+  header{
+    background-color: rgba(0,0,0,0.7);
+    padding:10px;
+    text-align:center;
+  }
+  #player-info{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:10px;
+  }
+  #player-avatar{
+    font-size:3rem;
+    width:80px;
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    margin-right:10px;
+  }
+  .shop{
+    background-color: rgba(255,255,255,0.1);
+    margin:10px;
+    padding:10px;
+    border-radius:10px;
+  }
+  .menu-item{
+    display:flex;
+    justify-content:space-between;
+  }
+  button{
+    cursor:pointer;
+    border-radius:5px;
+    padding:5px 10px;
+    margin:5px;
+    border:none;
+    background-color:#ffcc00;
+    color:#000;
+  }
+  #garden{
+    display:flex;
+    flex-wrap:wrap;
+    margin-top:20px;
+    justify-content:center;
+  }
+  .review-avatar{
+    margin:5px;
+    text-align:center;
+  }
+</style>
 </head>
 <body>
-<h1>สวนของนักผจญภัย</h1>
-<div id="profile" class="card"></div>
+
+<header>
+  <h1>สวน RPG ของ TastLink</h1>
+  <p>สวัสดี นักผจญภัย! รีวิวอาหารและโหวตร้านโปรดของเจ้าที่นี่!</p>
+</header>
+
+<div id="player-info">
+  <div id="player-avatar"></div>
+  <div id="player-name-display"></div>
+</div>
+
 <h2>ร้านอาหารแนะนำวันนี้</h2>
-<div id="restaurant-list"></div>
-<h2>คอมมูนิตี้</h2>
-<div id="posts"></div>
+<div id="shops-container"></div>
 
-<script type="module">
-import { db } from './firebase.js';
-import { doc, getDoc, collection, setDoc, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+<h2>สวนแห่งรีวิว</h2>
+<div id="garden"></div>
 
-const urlParams = new URLSearchParams(window.location.search);
-const player = urlParams.get('player');
-const profileDiv = document.getElementById('profile');
+<script>
+  // ดึงข้อมูลจาก URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const playerName = urlParams.get('player');
+  const playerEmoji = urlParams.get('emoji');
+  const playerBg = urlParams.get('bg');
 
-const playerDoc = await getDoc(doc(db,'players',player));
-if(playerDoc.exists()){
-  const data = playerDoc.data();
-  profileDiv.innerHTML = `<div style="background:${data.bg}; display:inline-block; padding:20px; border-radius:50%; font-size:64px;">${data.emoji}</div><p>${data.name}</p>`;
-}
+  const playerAvatar = document.getElementById('player-avatar');
+  playerAvatar.textContent = playerEmoji;
+  playerAvatar.style.backgroundColor = playerBg;
 
-// ตัวอย่างร้านอาหาร
-const restaurants = [
-  {name:'ร้าน A', menu:[{name:'ส้มตำ', price:50},{name:'ต้มยำ', price:60},{name:'ไก่ย่าง', price:80}]},
-  {name:'ร้าน B', menu:[{name:'ข้าวมันไก่', price:40},{name:'ก๋วยเตี๋ยว', price:35},{name:'ผัดไทย', price:50}]},
-  {name:'ร้าน C', menu:[{name:'พิซซ่า', price:120},{name:'สปาเก็ตตี้', price:90},{name:'ลาซานญ่า', price:100}]}
-];
+  document.getElementById('player-name-display').textContent = playerName;
 
-const restaurantList = document.getElementById('restaurant-list');
-restaurants.forEach(r=>{
-  const div = document.createElement('div'); div.className='card';
-  div.innerHTML = `<h3>${r.name}</h3>`+ r.menu.map(m=>`<p>${m.name} - ${m.price} บาท <button onclick="vote('${r.name}','${m.name}')">โหวตเมนู</button></p>`).join('') + `<button onclick="vote('${r.name}')">โหวตร้าน</button>`;
-  restaurantList.appendChild(div);
-});
+  // ตัวอย่างร้านอาหาร
+  const shops = [
+    {name:'ร้านปิ้งย่าง', menu:[{name:'หมูย่าง',price:100},{name:'ไก่ย่าง',price:90},{name:'สเต็ก',price:150}]},
+    {name:'ร้านกาแฟ', menu:[{name:'ลาเต้',price:60},{name:'คาปูชิโน',price:65},{name:'มอคค่า',price:70}]},
+    {name:'ร้านขนมหวาน', menu:[{name:'วาฟเฟิล',price:80},{name:'แพนเค้ก',price:75},{name:'ไอศกรีม',price:50}]},
+    {name:'ร้านอาหารญี่ปุ่น', menu:[{name:'ซูชิ',price:120},{name:'ราเมง',price:110},{name:'ข้าวหน้าปลา',price:130}]},
+    {name:'ร้านอาหารไทย', menu:[{name:'ต้มยำกุ้ง',price:90},{name:'ผัดไทย',price:85},{name:'แกงเขียวหวาน',price:95}]},
+  ];
 
-window.vote = async (restName, menuName=null)=>{
-  const docRef = doc(db,'players',player);
-  const playerData = (await getDoc(docRef)).data();
-  playerData.votes[restName] = playerData.votes[restName]||{restaurant:false,menu:[]};
-  if(menuName){ 
-    if(playerData.votes[restName].menu.length>=1){ alert('โหวตเมนูครบแล้ว'); return; }
-    playerData.votes[restName].menu.push(menuName);
-    alert('โหวตเมนูสำเร็จ!');
-  }else{
-    if(playerData.votes[restName].restaurant){ alert('โหวตร้านครบแล้ว'); return; }
-    playerData.votes[restName].restaurant=true;
-    alert('โหวตร้านสำเร็จ!');
+  const shopsContainer = document.getElementById('shops-container');
+
+  shops.forEach((shop,i)=>{
+    const shopDiv = document.createElement('div');
+    shopDiv.className='shop';
+    const shopName = document.createElement('h3');
+    shopName.textContent = shop.name;
+    shopDiv.appendChild(shopName);
+
+    shop.menu.forEach((item,j)=>{
+      const menuDiv = document.createElement('div');
+      menuDiv.className='menu-item';
+      menuDiv.textContent = `${item.name} - ${item.price} บาท`;
+
+      const voteBtn = document.createElement('button');
+      voteBtn.textContent='โหวตเมนู';
+      voteBtn.addEventListener('click',()=>{
+        addReview(playerName, playerEmoji, `${item.name} ที่ ${shop.name}`);
+        voteBtn.disabled = true;
+      });
+
+      menuDiv.appendChild(voteBtn);
+      shopDiv.appendChild(menuDiv);
+    });
+
+    const voteShopBtn = document.createElement('button');
+    voteShopBtn.textContent='โหวตร้านนี้';
+    voteShopBtn.addEventListener('click',()=>{
+      addReview(playerName, playerEmoji, `โหวตร้าน ${shop.name}`);
+      voteShopBtn.disabled = true;
+    });
+    shopDiv.appendChild(voteShopBtn);
+
+    shopsContainer.appendChild(shopDiv);
+  });
+
+  const garden = document.getElementById('garden');
+
+  function addReview(name, emoji, text){
+    const div = document.createElement('div');
+    div.className='review-avatar';
+    div.innerHTML=`<div style="font-size:2rem">${emoji}</div><div>${text}</div>`;
+    garden.appendChild(div);
   }
-  await setDoc(docRef, playerData);
-  showPost(playerData, restName, menuName);
-}
-
-function showPost(playerData, rest, menu){
-  const postsDiv = document.getElementById('posts');
-  let text = menu? `${playerData.name} รีวิวเมนู ${menu} จากร้าน ${rest}` : `${playerData.name} โหวตร้าน ${rest}`;
-  const div = document.createElement('div'); div.textContent=text;
-  postsDiv.appendChild(div);
-}
 </script>
+
 </body>
 </html>
