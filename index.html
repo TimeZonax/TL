@@ -3,120 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TastLink - YumYum Network</title>
-<!-- ฟ้อนต์ RPG -->
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<title>TastLink - ยินดีต้อนรับนักผจญภัย!</title>
 <style>
   body {
-    font-family: 'Press Start 2P', cursive;
-    background: linear-gradient(120deg, #1e3c72, #2a5298);
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(to bottom, #1e3c72, #2a5298);
     color: #fff;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
-    margin: 0;
+    margin:0;
   }
   #welcome-screen {
-    background-color: rgba(0,0,0,0.7);
+    text-align: center;
+    background-color: rgba(0,0,0,0.5);
     padding: 30px;
     border-radius: 15px;
-    text-align: center;
-    width: 350px;
   }
-  input, button {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 14px;
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 5px;
+  input[type=text] {
+    font-size: 1.2rem;
+    padding: 5px;
+    margin: 5px;
+  }
+  input[type=color] {
+    margin: 5px;
+    padding: 0;
+    width: 50px;
+    height: 50px;
     border: none;
-    outline: none;
   }
   #avatar-preview {
-    font-size: 50px;
+    font-size: 3rem;
     width: 100px;
     height: 100px;
-    line-height: 100px;
-    margin: 10px auto;
-    border-radius: 15px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:10px auto;
+    border-radius: 50%;
     background-color: #1e3c72;
   }
   button {
-    background-color: #ffb400;
-    color: #000;
-    cursor: pointer;
-    transition: 0.3s;
+    font-size:1.2rem;
+    padding:10px 20px;
+    margin-top:10px;
+    cursor:pointer;
+    border-radius:10px;
+    border:none;
+    background-color:#ffcc00;
+    color:#000;
+    transition:0.3s;
   }
   button:hover {
-    background-color: #ffd54f;
+    background-color:#ffaa00;
   }
 </style>
 </head>
 <body>
+
 <div id="welcome-screen">
   <h1>TastLink</h1>
   <h3>ทีม YumYum Network</h3>
-  <p>NPC: สวัสดี! ข้าคือผู้เฝ้าดันเจี้ยนแห่ง TastLink ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
+  <p>NPC: สวัสดี! ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
   <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น">
-  
+
   <p>เลือก Emoji อวาตาร์ของเจ้าผู้กล้า:</p>
   <input type="text" id="avatar-emoji" placeholder="🧙‍♂️" maxlength="2">
-  
+
   <p>เลือกพื้นหลังอวาตาร์ (สี):</p>
   <input type="color" id="avatar-bg" value="#1e3c72">
-  
+
   <div id="avatar-preview">🧙‍♂️</div>
-  
-  <button id="start-btn">เริ่มผจญภัย!</button>
+
+  <button id="start-btn">เริ่มผจญภัย</button>
 </div>
 
-<!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+<script>
+  const avatarInput = document.getElementById('avatar-emoji');
+  const avatarBgInput = document.getElementById('avatar-bg');
+  const avatarPreview = document.getElementById('avatar-preview');
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBHOhWtmNr_DwBPwEB2dFMzjgYThhjgUAk",
-  authDomain: "tastlink-a3875.firebaseapp.com",
-  projectId: "tastlink-a3875",
-  storageBucket: "tastlink-a3875.firebasestorage.app",
-  messagingSenderId: "662272184688",
-  appId: "1:662272184688:web:4be8759bd0bc6cb837bfb5",
-  measurementId: "G-LRD286YSFM"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// อัปเดต Preview
-const avatarInput = document.getElementById('avatar-emoji');
-const avatarBgInput = document.getElementById('avatar-bg');
-const avatarPreview = document.getElementById('avatar-preview');
-
-function updateAvatarPreview() {
-  avatarPreview.textContent = avatarInput.value || '🧙‍♂️';
-  avatarPreview.style.backgroundColor = avatarBgInput.value;
-}
-avatarInput.addEventListener('input', updateAvatarPreview);
-avatarBgInput.addEventListener('input', updateAvatarPreview);
-
-// เริ่มผจญภัย
-document.getElementById('start-btn').addEventListener('click', async () => {
-  const name = document.getElementById('player-name').value.trim();
-  const emoji = avatarInput.value || '🧙‍♂️';
-  const bg = avatarBgInput.value;
-  if(!name){ alert('กรุณาพิมพ์ชื่อผู้เล่นก่อนเริ่มผจญภัย'); return; }
-
-  try {
-    await setDoc(doc(db,'players',name), { name, emoji, bg, points:0, votes:{}, reviews:[] });
-    alert(`ยินดีต้อนรับ ${name}! เจ้าผู้กล้าแห่งทีม YumYum Network สู่โลกของ TastLink!`);
-    window.location.href = `park.html?player=${encodeURIComponent(name)}`;
-  } catch(e) {
-    console.error(e);
-    alert('เกิดข้อผิดพลาด! กรุณาลองใหม่อีกครั้ง');
+  function updateAvatarPreview(){
+    avatarPreview.textContent = avatarInput.value || '🧙‍♂️';
+    avatarPreview.style.backgroundColor = avatarBgInput.value;
   }
-});
+
+  avatarInput.addEventListener('input', updateAvatarPreview);
+  avatarBgInput.addEventListener('input', updateAvatarPreview);
+
+  document.getElementById('start-btn').addEventListener('click', ()=>{
+    const name = document.getElementById('player-name').value.trim();
+    if(!name){
+      alert('กรุณาพิมพ์ชื่อผู้เล่นก่อนเริ่มผจญภัย');
+      return;
+    }
+
+    const emoji = avatarInput.value || '🧙‍♂️';
+    const bg = avatarBgInput.value;
+
+    // ส่งข้อมูลผ่าน URL query
+    const params = new URLSearchParams();
+    params.set('player', name);
+    params.set('emoji', emoji);
+    params.set('bg', bg);
+
+    alert(`ยินดีต้อนรับ ${name}! เจ้าผู้กล้าแห่งทีม YumYum Network สู่โลกของ TastLink!`);
+
+    window.location.href = 'park.html?' + params.toString();
+  });
 </script>
+
 </body>
 </html>
