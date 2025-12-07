@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 YumYum Park | TasteLink</title>
+<style>
+body {
+  margin:0; font-family:'Arial',sans-serif; background:#fdf6f0; color:#333;
+}
+h1,h2,h3 { text-align:center; color:#ff6f61; margin:5px; }
+button { cursor:pointer; border:none; border-radius:8px; padding:6px 12px; margin:2px; background:#ff6f61; color:white; transition:0.2s; }
+button:hover { background:#ff4d4d; transform:scale(1.05); }
 
+#welcome-screen,#login-screen,#park-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; gap:10px; }
+#login-screen,#park-screen { display:none; }
+#avatar-preview,#player-avatar { width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:60px; background:#ffe0f0; transition:0.3s; }
+#avatar-options, .custom-btn { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; }
+
+#park-screen { max-width:600px; margin:0 auto; padding:20px; }
+#player-info { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+#player-name-display { font-weight:bold; font-size:20px; }
+
+.restaurant, #weekly-vote, #quest-reward, #community { background:#fff; border-radius:12px; padding:10px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+.menu-item { display:flex; justify-content:space-between; align-items:center; margin:5px 0; font-size:16px; }
+#community-input { display:flex; gap:5px; margin-top:10px; }
+#community-input input { flex:1; padding:5px; border-radius:6px; border:1px solid #ff6f61; }
+
+.reward-item { display:flex; justify-content:space-between; align-items:center; margin:5px 0; }
+footer { text-align:center; padding:10px; background:#333; color:white; }
+
+/* Animation */
+@keyframes pop { 0%{transform:scale(0);} 50%{transform:scale(1.3);} 100%{transform:scale(1);} }
+.reward-item button { animation:pop 0.5s; }
+</style>
+</head>
+<body>
+
+<!-- Welcome -->
+<div id="welcome-screen">
+  <h1>ยินดีต้อนรับสู่ YumYum Park! 🍭</h1>
+  <button onclick="enterLogin()">เริ่มการผจญภัย!</button>
+</div>
+
+<!-- Login -->
+<div id="login-screen">
+  <h2>ตั้งชื่อผู้เล่นและสร้างตัวละคร</h2>
+  <input type="text" id="player-name" placeholder="ชื่อผู้เล่น..." maxlength="12">
+  <div id="avatar-preview">😀</div>
+  <div id="avatar-options">
+    <button onclick="selectAvatar('😀')">😀</button>
+    <button onclick="selectAvatar('😎')">😎</button>
+    <button onclick="selectAvatar('🧑‍🍳')">🧑‍🍳</button>
+  </div>
+  <div id="avatar-custom">
+    <button class="custom-btn" onclick="changeHat()">🎩 หมวก</button>
+    <button class="custom-btn" onclick="changeGlasses()">🕶️ แว่น</button>
+    <button class="custom-btn" onclick="changeHair()">💇‍♂️ ผม</button>
+  </div>
+  <button onclick="startAdventure()">เข้าสวน YumYum Park!</button>
+</div>
+
+<!-- Park -->
+<div id="park-screen">
+  <div id="player-info">
+    <div id="player-avatar">😀</div>
+    <div id="player-name-display">นักผจญภัย</div>
+  </div>
+
+  <div id="restaurants"><h3>ร้านอาหาร 🍴</h3></div>
+
+  <div id="weekly-vote">
+    <h3>โหวตร้านสัปดาห์หน้า 🏆</h3>
+    <div id="vote-restaurants"></div>
+    <div id="vote-result" style="margin-top:5px;"></div>
+  </div>
+
+  <div id="quest-reward">
+    <h3>แต้ม & รางวัล</h3>
+    <div id="quest-info">คุณมี 0 แต้ม</div>
+    <div id="reward-shop"></div>
+  </div>
+
+  <div id="community">
+    <h3>ชุมชน 📝</h3>
+    <div id="posts"></div>
+    <div id="community-input">
+      <input type="text" id="post-text" placeholder="พิมพ์ข้อความ...">
+      <button onclick="addPost()">โพสต์</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 YumYum Park</footer>
+
+<script>
+// Avatar
+let selectedAvatar='😀', hat='', glasses='', hair='';
+function selectAvatar(emoji){ selectedAvatar=emoji; updateAvatar(); }
+function changeHat(){ hat=hat?'':'🎩'; updateAvatar(); }
+function changeGlasses(){ glasses=glasses?'':'🕶️'; updateAvatar(); }
+function changeHair(){ hair=hair?'':'💇‍♂️'; updateAvatar(); }
+function updateAvatar(){
+  let display=selectedAvatar+(hat?hat:'')+(glasses?glasses:'')+(hair?hair:'');
+  document.getElementById('avatar-preview').textContent=display;
+  document.getElementById('player-avatar').textContent=display;
+}
+
+// Welcome/Login
+function enterLogin(){ document.getElementById('welcome-screen').style.display='none'; document.getElementById('login-screen').style.display='flex'; }
+function startAdventure(){
+  const name=document.getElementById('player-name').value||'นักผจญภัย';
+  localStorage.setItem('playerName',name);
+  localStorage.setItem('playerAvatar',selectedAvatar);
+  document.getElementById('player-name-display').textContent=name;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('park-screen').style.display='block';
+  renderRestaurants(); renderVoteOptions(); renderRewards(); renderPosts();
+}
+
+// Restaurants
+const restaurantData=[
+  {name:'ร้าน A',menu:[{name:'🍳 ข้าวไข่เจียว',stars:0},{name:'🥗 สลัด',stars:0}]},
+  {name:'ร้าน B',menu:[{name:'🍕 พิซซ่า',stars:0},{name:'🍔 เบอร์เกอร์',stars:0}]},
+  {name:'ร้าน C',menu:[{name:'🍣 ซูชิ',stars:0},{name:'🍜 ราเมง',stars:0}]}
+];
+function renderRestaurants(){
+  const container=document.getElementById('restaurants'); container.innerHTML='<h3>ร้านอาหาร 🍴</h3>';
+  restaurantData.forEach((r,i)=>{
+    const div=document.createElement('div'); div.className='restaurant';
+    let html=`<strong>${r.name}</strong>`;
+    r.menu.forEach((m,j)=>{ html+=`<div class="menu-item">${m.name} ⭐${m.stars} <button onclick="addStar(${i},${j})">รีวิว +1</button></div>`; });
+    div.innerHTML=html; container.appendChild(div);
+  });
+}
+function addStar(ri,mi){ restaurantData[ri].menu[mi].stars+=1; renderRestaurants(); updatePoints(10); }
+
+// Vote once
+let voted=false;
+function renderVoteOptions(){
+  const voteDiv=document.getElementById('vote-restaurants'); voteDiv.innerHTML='';
+  restaurantData.forEach((r,i)=>{ const btn=document.createElement('button'); btn.textContent=r.name; btn.onclick=()=>voteRestaurant(i); voteDiv.appendChild(btn); });
+}
+function voteRestaurant(index){
+  if(voted){ alert('คุณโหวตได้ครั้งเดียวต่อผู้เล่นเท่านั้น!'); return; }
+  voted=true; updatePoints(10); document.getElementById('vote-result').textContent=`คุณโหวตร้าน ${restaurantData[index].name} เรียบร้อย! +10 แต้ม`;
+}
+
+// Points & Rewards
+let questPoints=0;
+function updatePoints(points){ questPoints+=points; document.getElementById('quest-info').textContent=`คุณมี ${questPoints} แต้ม`; renderRewards(); }
+const rewardItems=[{name:'เสื้อสีแดง',cost:30},{name:'หมวกแฟนซี',cost:50},{name:'ทรงผมพิเศษ',cost:40},{name:'กรอบทอง',cost:60}];
+function renderRewards(){
+  const shop=document.getElementById('reward-shop'); shop.innerHTML='<h4>ร้านค้าแลกของรางวัล</h4>';
+  rewardItems.forEach(it=>{ shop.innerHTML+=`<div class="reward-item">${it.name} - ${it.cost} แต้ม <button onclick="buyReward('${it.name}',${it.cost})">แลก</button></div>`; });
+}
+function buyReward(name,cost){ if(questPoints>=cost){ questPoints-=cost; alert(`คุณแลก ${name} เรียบร้อย!`); updatePoints(0); }else alert('แต้มไม่เพียงพอ!'); }
+
+// Community
+const posts=[];
+function addPost(){ const text=document.getElementById('post-text').value; if(!text) return; posts.unshift({avatar:selectedAvatar,content:text}); renderPosts(); document.getElementById('post-text').value=''; updatePoints(10); }
+function renderPosts(){ const container=document.getElementById('posts'); container.innerHTML=''; posts.forEach(p=>{ const div=document.createElement('div'); div.textContent=`${p.avatar}: ${p.content}`; container.appendChild(div); }); }
+
+// Load player
+window.onload = ()=>{
+  const name=localStorage.getItem('playerName')||'นักผจญภัย';
+  const avatar=localStorage.getItem('playerAvatar')||'😀';
+  document.getElementById('player-name-display').textContent=name;
+  selectedAvatar=avatar; updateAvatar();
+};
+</script>
+
+</body>
+</html>
