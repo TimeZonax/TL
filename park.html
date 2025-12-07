@@ -3,27 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>สวนนักผจญภัย - TastLink</title>
+<title>โลก RPG - TastLink</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="park-screen">
-  <h1>สวนแห่ง TastLink</h1>
-  <div id="player-profile">
-    <div id="player-avatar"></div>
-    <h2 id="player-name-display"></h2>
+  <div id="player-info">
+    <div id="avatar-display"></div>
+    <h3 id="player-name-display"></h3>
+    <p id="player-points">คะแนน: 0</p>
   </div>
-  
-  <h3>อาหารแนะนำวันนี้</h3>
-  <div id="daily-food"></div>
-  
-  <h3>ร้านอาหาร</h3>
-  <div id="shops-container"></div>
-  
-  <h3>คอมมูนิตี้แชท</h3>
-  <div id="community-chat"></div>
-  
-  <button id="refresh-btn" class="rpg-btn">รีเฟรชสวน</button>
+  <div id="quests">
+    <h2>เควสต์ของวันนี้</h2>
+    <p>1. รีวิวอาหาร</p>
+    <p>2. โหวตร้านอาหารที่อยากให้มาเปิด</p>
+    <p>3. พูดคุยกับนักผจญภัยอื่นในคอมมูนิตี้</p>
+  </div>
+  <div id="shops">
+    <h2>ร้านค้า</h2>
+    <div class="shop-list"></div>
+  </div>
+  <div id="garden">
+    <h2>สวนของนักผจญภัย</h2>
+    <div id="garden-display"></div>
+  </div>
 </div>
 <script src="script.js"></script>
 </body>
