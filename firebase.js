@@ -1,8 +1,7 @@
 // firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Firebase config จากโปรเจคคุณ
 const firebaseConfig = {
   apiKey: "AIzaSyBHOhWtmNr_DwBPwEB2dFMzjgYThhjgUAk",
   authDomain: "tastlink-a3875.firebaseapp.com",
@@ -13,6 +12,5 @@ const firebaseConfig = {
   measurementId: "G-LRD286YSFM"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
