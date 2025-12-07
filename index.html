@@ -3,58 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TastLink - Welcome</title>
-<link rel="stylesheet" href="style.css">
+<title>TastLink - YumYum Network</title>
+<!-- ฟ้อนต์ RPG -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(120deg, #1e3c72, #2a5298);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  #welcome-screen {
+    background-color: rgba(0,0,0,0.7);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 350px;
+  }
+  input, button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+  }
+  #avatar-preview {
+    font-size: 50px;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    margin: 10px auto;
+    border-radius: 15px;
+    background-color: #1e3c72;
+  }
+  button {
+    background-color: #ffb400;
+    color: #000;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    background-color: #ffd54f;
+  }
+</style>
 </head>
 <body>
 <div id="welcome-screen">
   <h1>TastLink</h1>
   <h3>ทีม YumYum Network</h3>
-  <p>ยินดีต้อนรับนักผจญภัยสู่โลก RPG แฟนตาซี!</p>
   <p>NPC: สวัสดี! ข้าคือผู้เฝ้าดันเจี้ยนแห่ง TastLink ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
   <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น">
+  
   <p>เลือก Emoji อวาตาร์ของเจ้าผู้กล้า:</p>
   <input type="text" id="avatar-emoji" placeholder="🧙‍♂️" maxlength="2">
+  
   <p>เลือกพื้นหลังอวาตาร์ (สี):</p>
   <input type="color" id="avatar-bg" value="#1e3c72">
+  
   <div id="avatar-preview">🧙‍♂️</div>
-  <button id="start-btn">เริ่มการผจญภัย</button>
+  
+  <button id="start-btn">เริ่มผจญภัย!</button>
 </div>
 
+<!-- Firebase SDK -->
 <script type="module">
-import { db } from './firebase.js';
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBHOhWtmNr_DwBPwEB2dFMzjgYThhjgUAk",
+  authDomain: "tastlink-a3875.firebaseapp.com",
+  projectId: "tastlink-a3875",
+  storageBucket: "tastlink-a3875.firebasestorage.app",
+  messagingSenderId: "662272184688",
+  appId: "1:662272184688:web:4be8759bd0bc6cb837bfb5",
+  measurementId: "G-LRD286YSFM"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// อัปเดต Preview
 const avatarInput = document.getElementById('avatar-emoji');
 const avatarBgInput = document.getElementById('avatar-bg');
 const avatarPreview = document.getElementById('avatar-preview');
 
-// ฟังชันอัปเดต emoji + background
-function updateAvatarPreview(){
+function updateAvatarPreview() {
   avatarPreview.textContent = avatarInput.value || '🧙‍♂️';
   avatarPreview.style.backgroundColor = avatarBgInput.value;
 }
 avatarInput.addEventListener('input', updateAvatarPreview);
 avatarBgInput.addEventListener('input', updateAvatarPreview);
 
-document.getElementById('start-btn').addEventListener('click', async ()=>{
+// เริ่มผจญภัย
+document.getElementById('start-btn').addEventListener('click', async () => {
   const name = document.getElementById('player-name').value.trim();
   const emoji = avatarInput.value || '🧙‍♂️';
   const bg = avatarBgInput.value;
-  
   if(!name){ alert('กรุณาพิมพ์ชื่อผู้เล่นก่อนเริ่มผจญภัย'); return; }
 
-  try{
-    // สร้าง player doc ใน Firestore
-    await setDoc(doc(db,'players',name), { 
-      name, emoji, bg, points:0, votes:{}, reviews:[] 
-    });
-
+  try {
+    await setDoc(doc(db,'players',name), { name, emoji, bg, points:0, votes:{}, reviews:[] });
     alert(`ยินดีต้อนรับ ${name}! เจ้าผู้กล้าแห่งทีม YumYum Network สู่โลกของ TastLink!`);
-    
-    // ไปหน้า park.html พร้อมส่งชื่อ player
     window.location.href = `park.html?player=${encodeURIComponent(name)}`;
-  } catch(e){
+  } catch(e) {
     console.error(e);
     alert('เกิดข้อผิดพลาด! กรุณาลองใหม่อีกครั้ง');
   }
