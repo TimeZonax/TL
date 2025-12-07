@@ -1,28 +1,30 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TastLink - เริ่มผจญภัย</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <div id="welcome-screen">
-            <h1>ยินดีต้อนรับนักผจญภัย!</h1>
-            <h2>TastLink - ทีม YumYum Network</h2>
-            <p>NPC: ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
-            <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น">
-            <p>เลือก Emoji อวาตาร์ของเจ้า:</p>
-            <input type="text" id="avatar-emoji" placeholder="🧙‍♂️" maxlength="2">
-            <p>เลือกพื้นหลังอวาตาร์:</p>
-            <input type="color" id="avatar-bg" value="#FFD700">
-            <div id="avatar-preview">🧙‍♂️</div>
-            <button id="start-btn" class="glow-btn">เริ่มผจญภัย</button>
+<div id="avatar-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('avatar-modal')">&times;</span>
+            <h2>🎨 ห้องแต่งตัวอวาตาร์</h2>
+            <div class="avatar-preview">
+                <div id="custom-avatar-display" style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(45deg, #ff7171, #f9f871); margin: 20px auto; border: 5px solid #fff;">
+                </div>
+                <p style="color: #66bb6a; font-weight: bold;">[Mockup: เปลี่ยนทรงผม หมวก และใบหน้าได้ที่นี่]</p>
+            </div>
+            
+            <h3>ตัวเลือกเครื่องแต่งกาย (Demo)</h3>
+            <button onclick="changeAvatarLook('blue')">หมวกสีน้ำเงิน (RARE)</button>
+            <button onclick="changeAvatarLook('green')">ทรงผมสีเขียว</button>
+            <button onclick="saveAvatar()">บันทึก</button>
+        </div>
+    </div>
+
+    <div id="alert-modal" class="modal alert-high-priority">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('alert-modal')">&times;</span>
+            <h2>🚨 สถานะฉุกเฉิน!</h2>
+            <p id="alert-message">ร้านก๋วยเตี๋ยวเรือเทพ ปิดทำการกะทันหัน (วัตถุดิบหมด)! กรุณาเลือกซื้อร้านอื่นแทน</p>
+            <button onclick="closeModal('alert-modal')">รับทราบ</button>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
