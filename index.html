@@ -1,119 +1,30 @@
+{"id":"78016","variant":"standard"}
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TastLink - ยินดีต้อนรับนักผจญภัย!</title>
-<style>
-  body {
-    font-family: 'Courier New', monospace;
-    background: linear-gradient(to bottom, #1e3c72, #2a5298);
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin:0;
-  }
-  #welcome-screen {
-    text-align: center;
-    background-color: rgba(0,0,0,0.5);
-    padding: 30px;
-    border-radius: 15px;
-  }
-  input[type=text] {
-    font-size: 1.2rem;
-    padding: 5px;
-    margin: 5px;
-  }
-  input[type=color] {
-    margin: 5px;
-    padding: 0;
-    width: 50px;
-    height: 50px;
-    border: none;
-  }
-  #avatar-preview {
-    font-size: 3rem;
-    width: 100px;
-    height: 100px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin:10px auto;
-    border-radius: 50%;
-    background-color: #1e3c72;
-  }
-  button {
-    font-size:1.2rem;
-    padding:10px 20px;
-    margin-top:10px;
-    cursor:pointer;
-    border-radius:10px;
-    border:none;
-    background-color:#ffcc00;
-    color:#000;
-    transition:0.3s;
-  }
-  button:hover {
-    background-color:#ffaa00;
-  }
-</style>
+<title>TastLink - YumYum Network</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div id="welcome-screen">
-  <h1>TastLink</h1>
-  <h3>ทีม YumYum Network</h3>
-  <p>NPC: สวัสดี! ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
-  <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น">
-
-  <p>เลือก Emoji อวาตาร์ของเจ้าผู้กล้า:</p>
-  <input type="text" id="avatar-emoji" placeholder="🧙‍♂️" maxlength="2">
-
-  <p>เลือกพื้นหลังอวาตาร์ (สี):</p>
-  <input type="color" id="avatar-bg" value="#1e3c72">
-
-  <div id="avatar-preview">🧙‍♂️</div>
-
-  <button id="start-btn">เริ่มผจญภัย</button>
+  <div class="npc-card">
+    <h1>ยินดีต้อนรับนักผจญภัย!</h1>
+    <h2>TastLink</h2>
+    <h3>ทีม YumYum Network</h3>
+    <p id="npc-text">NPC: สวัสดี! ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
+    <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น">
+    <p>เลือก Emoji อวาตาร์ของเจ้าผู้กล้า:</p>
+    <input type="text" id="avatar-emoji" placeholder="🧙‍♂️" maxlength="2">
+    <p>เลือกพื้นหลังอวาตาร์ (สี):</p>
+    <input type="color" id="avatar-bg" value="#1e3c72">
+    <div id="avatar-preview">🧙‍♂️</div>
+    <p>NPC: ตอนนี้เจ้าผู้กล้าอยู่ที่ดันเจี้ยน โรงเตี้ยม KBS KMITL</p>
+    <p>เควสของเจ้าคือ รีวิวอาหารและโหวตร้านอาหารที่อยากให้มาเปิดในสัปดาห์หน้า!</p>
+    <button id="start-btn">เริ่มผจญภัย</button>
+  </div>
 </div>
-
-<script>
-  const avatarInput = document.getElementById('avatar-emoji');
-  const avatarBgInput = document.getElementById('avatar-bg');
-  const avatarPreview = document.getElementById('avatar-preview');
-
-  function updateAvatarPreview(){
-    avatarPreview.textContent = avatarInput.value || '🧙‍♂️';
-    avatarPreview.style.backgroundColor = avatarBgInput.value;
-  }
-
-  avatarInput.addEventListener('input', updateAvatarPreview);
-  avatarBgInput.addEventListener('input', updateAvatarPreview);
-
-  document.getElementById('start-btn').addEventListener('click', ()=>{
-    const name = document.getElementById('player-name').value.trim();
-    if(!name){
-      alert('กรุณาพิมพ์ชื่อผู้เล่นก่อนเริ่มผจญภัย');
-      return;
-    }
-
-    const emoji = avatarInput.value || '🧙‍♂️';
-    const bg = avatarBgInput.value;
-
-    // ส่งข้อมูลผ่าน URL query
-    const params = new URLSearchParams();
-    params.set('player', name);
-    params.set('emoji', emoji);
-    params.set('bg', bg);
-
-    alert(`ยินดีต้อนรับ ${name}! เจ้าผู้กล้าแห่งทีม YumYum Network สู่โลกของ TastLink!`);
-
-    window.location.href = 'park.html?' + params.toString();
-  });
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
