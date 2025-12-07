@@ -39,9 +39,11 @@
   #ranking { margin-top:20px; background:rgba(255,255,255,0.95); border-radius:12px; padding:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2); }
   #ranking h3{ margin:5px; }
 
+  #weekly-vote { margin-top:20px; background:rgba(255,255,255,0.95); border-radius:12px; padding:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2); }
+  #vote-restaurants button { margin:2px; }
+
   footer { text-align:center; padding:10px; background-color:#333; color:#fff; position:fixed; bottom:0; width:100%; }
 
-  /* Confetti */
   .confetti { position:fixed; width:10px; height:10px; background:red; animation:fall 1s linear forwards; z-index:9999; }
   @keyframes fall { 0%{transform:translateY(0) rotate(0deg);} 100%{transform:translateY(600px) rotate(360deg);} }
 </style>
@@ -68,6 +70,12 @@
   <div id="ranking">
     <h3>Top Menu ของ YumYum Park</h3>
     <ul id="top-menu-list"></ul>
+  </div>
+
+  <div id="weekly-vote">
+    <h3>โหวตร้านสัปดาห์หน้า 🍴</h3>
+    <div id="vote-restaurants"></div>
+    <div id="vote-result"></div>
   </div>
 
   <div id="quest-reward">
@@ -138,6 +146,7 @@ function renderRestaurants(){
     container.appendChild(div);
   });
   renderRanking();
+  renderVoteOptions();
 }
 
 function addStar(ri,mi){
@@ -177,6 +186,26 @@ function renderPosts(){
   });
 }
 
+/* ------------------ ระบบโหวตร้านสัปดาห์ต่อไป ------------------ */
+function renderVoteOptions() {
+  const voteDiv = document.getElementById('vote-restaurants');
+  voteDiv.innerHTML = '';
+  restaurantData.forEach((r, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = r.name;
+    btn.className = 'custom-btn';
+    btn.onclick = () => voteRestaurant(i);
+    voteDiv.appendChild(btn);
+  });
+}
+
+function voteRestaurant(index) {
+  questPoints += 10;
+  document.getElementById('vote-result').textContent = `คุณโหวตร้าน ${restaurantData[index].name} เรียบร้อย! +10 แต้ม`;
+  completeQuest('โหวตร้าน');
+}
+
+/* ------------------ Quest & Reward ------------------ */
 let questPoints=0;
 let badges = {รีวิว:false,โหวตร้าน:false,โพสต์:false,อวาตาร์:false};
 function completeQuest(type){ 
