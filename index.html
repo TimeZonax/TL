@@ -1,75 +1,41 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TasteLink | Welcome</title>
+<title>TastLink - Welcome</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div id="welcome-screen">
-  <h1>ยินดีต้อนรับนักผจญภัยสู่ TasteLink!</h1>
-  <h2>คุณพร้อมที่จะออกผจญภัยใน YumYum Network หรือยัง? 🌳🍔</h2>
-  <button onclick="enterLogin()">เริ่มการผจญภัย!</button>
-</div>
-
-<div id="login-screen" style="display:none;">
-  <h2>ตั้งชื่อผู้เล่นของคุณ</h2>
-  <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น..." maxlength="12">
-  
-  <h3>สร้างอวาตาร์ (Emoji)</h3>
-  <div id="avatar-preview" style="font-size:64px; text-align:center;">🧙‍♂️</div>
-  <input type="text" id="avatar-emoji" maxlength="2" placeholder="ใส่อิโมจิ เช่น 🧙‍♂️" oninput="updateAvatarPreview()">
-
-  <h3>เลือกพื้นหลังโปรไฟล์</h3>
-  <input type="color" id="avatar-bg" value="#ffd700" onchange="updateAvatarPreview()">
-
-  <button onclick="startAdventure()">เข้าสู่ YumYum Park!</button>
+  <h1>ยินดีต้อนรับนักผจญภัย!</h1>
+  <p>NPC: สวัสดี! ข้าอยากรู้ชื่อเจ้าผู้กล้า</p>
+  <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น">
+  <p>เลือก Emoji อวาตาร์:</p>
+  <input type="text" id="avatar-emoji" placeholder="🧙‍♂️">
+  <p>เลือกพื้นหลังอวาตาร์ (สี):</p>
+  <input type="color" id="avatar-bg" value="#1e3c72">
+  <div id="avatar-preview">🧙‍♂️</div>
+  <button id="start-btn">เริ่มการผจญภัย</button>
 </div>
 
 <script type="module">
 import { db } from './firebase.js';
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-function enterLogin() {
-  document.getElementById('welcome-screen').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'block';
-}
+const avatarInput = document.getElementById('avatar-emoji');
+const avatarPreview = document.getElementById('avatar-preview');
+avatarInput.addEventListener('input', ()=>{ avatarPreview.textContent = avatarInput.value || '🧙‍♂️'; });
 
-function updateAvatarPreview() {
-  const emoji = document.getElementById('avatar-emoji').value || '🧙‍♂️';
-  const bg = document.getElementById('avatar-bg').value;
-  const preview = document.getElementById('avatar-preview');
-  preview.textContent = emoji;
-  preview.style.backgroundColor = bg;
-  preview.style.borderRadius = '50%';
-  preview.style.width = '100px';
-  preview.style.height = '100px';
-  preview.style.lineHeight = '100px';
-}
-
-async function startAdventure() {
+document.getElementById('start-btn').addEventListener('click', async ()=>{
   const name = document.getElementById('player-name').value;
   const emoji = document.getElementById('avatar-emoji').value || '🧙‍♂️';
   const bg = document.getElementById('avatar-bg').value;
-
-  if (!name) { alert('กรุณาพิมพ์ชื่อผู้เล่น'); return; }
-
-  // บันทึกลง Firestore
-  await setDoc(doc(db, 'players', name), {
-    name: name,
-    emoji: emoji,
-    bg: bg,
-    points: 0,
-    votes: {},
-    reviews: []
-  });
-
-  // ไปหน้าสวน
-  window.location.href = 'park.html?player=' + encodeURIComponent(name);
-}
+  if(!name){ alert('กรุณาพิมพ์ชื่อผู้เล่น'); return; }
+  
+  await setDoc(doc(db,'players',name), { name, emoji, bg, points:0, votes:{}, reviews:[] });
+  window.location.href = 'park.html?player='+encodeURIComponent(name);
+});
 </script>
-
 </body>
 </html>
