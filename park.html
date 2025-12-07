@@ -3,52 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YumYum Park 🌳 | TasteLink</title>
+<title>🍭 YumYum Park - TasteLink</title>
 <style>
-  /* ------------------ พื้นฐาน ------------------ */
-  body, html {
+  body {
     margin: 0;
-    padding: 0;
     font-family: 'Comic Sans MS', sans-serif;
-    background: #cce7ff;
+    background: linear-gradient(to bottom, #cce7ff, #ffffff);
     overflow-x: hidden;
   }
-  h1, h2, h3 { text-align: center; color: #ff6f61; text-shadow: 2px 2px #ffe066; }
 
-  /* ------------------ พื้นสวน ------------------ */
-  #park {
-    position: relative;
-    width: 100%;
-    height: 90vh;
-    background: url('https://images.unsplash.com/photo-1601914764647-efcab95e95b4?auto=format&fit=crop&w=1350&q=80') no-repeat center center;
-    background-size: cover;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: flex-end;
-    padding-bottom: 20px;
+  h1, h2 {
+    text-align: center;
+    color: #ff6f61;
+    text-shadow: 2px 2px #ffe066;
+  }
+
+  /* ------------------ Header ------------------ */
+  header {
+    background-color: #ffcc00;
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
   }
 
   /* ------------------ ร้านอาหาร ------------------ */
-  .restaurant {
-    width: 160px;
-    height: 180px;
-    background-color: rgba(255,255,255,0.9);
-    border: 3px solid #ff6f61;
+  .shop-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px;
+  }
+
+  .shop {
+    background: #fff7e6;
+    border: 2px solid #ff6f61;
     border-radius: 12px;
+    width: 220px;
+    margin: 10px;
     padding: 10px;
     text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     position: relative;
   }
-  .restaurant:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-  .restaurant img {
-    width: 80px;
-    height: 80px;
-    border-radius: 12px;
-    object-fit: cover;
+  .shop h3 { margin: 5px 0; }
+
+  .menu-list {
+    text-align: left;
+    margin-top: 10px;
+  }
+
+  .menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+  }
+
+  .menu-item span {
+    font-weight: bold;
   }
 
   .status {
@@ -57,80 +71,89 @@
     right: 5px;
     padding: 3px 6px;
     border-radius: 6px;
-    font-weight: bold;
     color: white;
+    font-weight: bold;
+    font-size: 12px;
   }
-  .Busy { background-color: #ff4d4d; }
-  .Available { background-color: #4dff4d; }
 
-  /* ------------------ แถบ Community ------------------ */
+  .available { background-color: #28a745; }
+  .busy { background-color: #dc3545; }
+
+  /* ------------------ Community ------------------ */
   #community {
-    height: 30vh;
-    overflow-y: auto;
-    background-color: #fff7e6;
-    border-top: 3px solid #ffcc00;
-    padding: 10px;
+    margin: 20px;
   }
+
   .post {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .post img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  .post-content {
-    background-color: #ffe066;
-    padding: 6px 10px;
-    border-radius: 8px;
-    flex: 1;
-  }
-
-  /* ------------------ Ranking ------------------ */
-  #ranking {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 10px;
-  }
-  .rank-box {
-    background-color: #ffffffcc;
+    background: #fff7e6;
+    border: 2px solid #ff6f61;
+    border-radius: 12px;
     padding: 10px;
-    border-radius: 8px;
-    width: 30%;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
   }
 
+  .post-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+    border: 2px solid #ff6f61;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .post-content { flex: 1; }
+
+  /* ------------------ Footer ------------------ */
   footer {
     text-align: center;
     padding: 10px;
     background-color: #333;
-    color: white;
+    color: #fff;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
   }
+
+  /* ------------------ Quest / Reward ------------------ */
+  #quest {
+    margin: 20px;
+    text-align: center;
+    background: #fffae6;
+    padding: 10px;
+    border: 2px solid #ff6f61;
+    border-radius: 12px;
+  }
+
+  #quest span { font-weight: bold; color: #28a745; }
 
 </style>
 </head>
 <body>
 
-<h1>🌳 ยินดีต้อนรับสู่ YumYum Park 🌳</h1>
-<h3>ผู้กล้า: <span id="player-name-display"></span></h3>
-<div id="park"></div>
+<header>
+  ยินดีต้อนรับ <span id="playerNameDisplay"></span> สู่ YumYum Park! 🌳🍔
+</header>
 
-<div id="ranking">
-  <div class="rank-box">
-    <h3>Top ร้าน</h3>
-    <ul id="restaurant-ranking"></ul>
-  </div>
-  <div class="rank-box">
-    <h3>Top เมนู</h3>
-    <ul id="menu-ranking"></ul>
-  </div>
+<!-- ร้านอาหาร -->
+<div class="shop-list" id="shopList">
+  <!-- ร้านจะถูกสร้างจาก JS -->
 </div>
 
+<!-- Quest / Reward -->
+<div id="quest">
+  เควสวันนี้: รีวิวร้านอาหารหรือโพสต์ในชุมชนเพื่อรับ <span>5 คะแนน</span>!
+</div>
+
+<!-- Community -->
 <div id="community">
-  <h3>ชุมชน / รีวิว</h3>
+  <h2>ชุมชนเมือง / โรงเตี๊ยม</h2>
   <div id="posts"></div>
+  <input type="text" id="newPost" placeholder="เขียนโพสต์ของคุณ..." style="width:70%; padding:5px;">
+  <button onclick="addPost()">โพสต์!</button>
 </div>
 
 <footer>
@@ -138,99 +161,81 @@
 </footer>
 
 <script>
-  // ------------------ โหลดผู้เล่น ------------------
-  const playerName = localStorage.getItem('playerName') || 'นักผจญภัย';
-  const playerAvatar = localStorage.getItem('playerAvatar') || 'https://i.ibb.co/Y2GfKz6/avatar1.png';
-  document.getElementById('player-name-display').innerText = playerName;
+// ------------------ ข้อมูลผู้เล่น ------------------
+const playerName = localStorage.getItem('playerName') || 'นักผจญภัย';
+const playerAvatar = localStorage.getItem('playerAvatar') || 'https://i.ibb.co/Y2GfKz6/avatar1.png';
+document.getElementById('playerNameDisplay').textContent = playerName;
 
-  // ------------------ ร้านอาหาร 5 ร้าน x เมนู 3 เมนู ------------------
-  const restaurants = [
-    { name: 'Dragon Diner', status: 'Available', menu: [
-      {name:'Fire Burger', img:'https://i.ibb.co/JyPxxPQ/burger.jpg', stars: 0},
-      {name:'Flame Fries', img:'https://i.ibb.co/4s2Lh6H/fries.jpg', stars: 0},
-      {name:'Dragon Soda', img:'https://i.ibb.co/Yf1V6v6/soda.jpg', stars: 0}
-    ], stars: 0},
-    { name: 'Elf Bakery', status: 'Busy', menu:[
-      {name:'Magic Bread', img:'https://i.ibb.co/6b9Q6J3/bread.jpg', stars: 0},
-      {name:'Elf Cake', img:'https://i.ibb.co/7CkpYbN/cake.jpg', stars: 0},
-      {name:'Potion Latte', img:'https://i.ibb.co/7kH6dTM/latte.jpg', stars: 0}
-    ], stars:0},
-    { name: 'Wizard\'s Tavern', status: 'Available', menu:[
-      {name:'Mana Stew', img:'https://i.ibb.co/5B1JvN6/stew.jpg', stars: 0},
-      {name:'Spell Sandwich', img:'https://i.ibb.co/6v1W6vC/sandwich.jpg', stars: 0},
-      {name:'Wizard Ale', img:'https://i.ibb.co/TkG1K7z/ale.jpg', stars: 0}
-    ], stars:0},
-    { name: 'Knight\'s Grill', status:'Busy', menu:[
-      {name:'Sword Steak', img:'https://i.ibb.co/6XK7k6S/steak.jpg', stars:0},
-      {name:'Shield Salad', img:'https://i.ibb.co/7vK5v6v/salad.jpg', stars:0},
-      {name:'Armor Ale', img:'https://i.ibb.co/5kH6vN7/armorale.jpg', stars:0}
-    ], stars:0},
-    { name: 'Goblin Snack', status:'Available', menu:[
-      {name:'Goblin Chips', img:'https://i.ibb.co/4pQJ6v8/chips.jpg', stars:0},
-      {name:'Slime Juice', img:'https://i.ibb.co/8kH6vL9/slime.jpg', stars:0},
-      {name:'Rock Candy', img:'https://i.ibb.co/9kJ7vN1/candy.jpg', stars:0}
-    ], stars:0},
-  ];
+// ------------------ ข้อมูลร้านอาหาร ------------------
+const shops = [
+  { name: 'ร้านหมูย่างไฟลุก', status: 'available', menus:[{name:'หมูปิ้ง', stars:0},{name:'ไส้กรอกย่าง', stars:0},{name:'ส้มตำ', stars:0}] },
+  { name: 'ร้านขนมหวานวิเศษ', status: 'busy', menus:[{name:'เค้กช็อคโกแลต', stars:0},{name:'พายผลไม้', stars:0},{name:'ไอศกรีม', stars:0}] },
+  { name: 'ร้านพิซซ่าฟ้าใส', status: 'available', menus:[{name:'พิซซ่ามาร์เกริต้า', stars:0},{name:'พิซซ่าเปปเปอโรนี', stars:0},{name:'พิซซ่าฮาวาย', stars:0}] },
+  { name: 'ร้านน้ำผลไม้สุดสด', status: 'busy', menus:[{name:'น้ำส้มคั้น', stars:0},{name:'น้ำองุ่น', stars:0},{name:'น้ำมะพร้าว', stars:0}] },
+  { name: 'ร้านเบอร์เกอร์แฟนตาซี', status: 'available', menus:[{name:'เบอร์เกอร์หมู', stars:0},{name:'เบอร์เกอร์ไก่', stars:0},{name:'เบอร์เกอร์เนื้อ', stars:0}] }
+];
 
-  const parkDiv = document.getElementById('park');
-
-  restaurants.forEach((r, idx)=>{
+// ------------------ สร้างร้านอาหาร ------------------
+function renderShops(){
+  const shopList = document.getElementById('shopList');
+  shopList.innerHTML = '';
+  shops.forEach((shop,index)=>{
     const div = document.createElement('div');
-    div.className = 'restaurant';
-    div.innerHTML = `<h4>${r.name}</h4>
-                     <img src="${r.menu[0].img}" alt="${r.name}">
-                     <div class="status ${r.status}">${r.status}</div>`;
-    div.onclick = ()=>openRestaurant(idx);
-    parkDiv.appendChild(div);
+    div.className = 'shop';
+    div.innerHTML = `<h3>${shop.name}</h3>
+                     <div class="status ${shop.status}">${shop.status==='available'?'ว่าง':'ยุ่ง'}</div>
+                     <div class="menu-list">
+                     ${shop.menus.map(m=>`<div class="menu-item">${m.name} - ดาว: <span id="menu-${index}-${m.name}">${m.stars}</span></div>`).join('')}
+                     </div>
+                     <button onclick="reviewShop(${index})">รีวิวร้านนี้</button>`;
+    shopList.appendChild(div);
   });
+}
+renderShops();
 
-  function openRestaurant(idx){
-    const r = restaurants[idx];
-    let menuText = r.menu.map(m=>`${m.name} ⭐${m.stars}`).join('\n');
-    const comment = prompt(`คุณเลือก ${r.name}!\nเมนู:\n${menuText}\n\nให้ดาวร้าน/เมนูหรือคอมเม้น? (พิมพ์ข้อความ)`);
-    if(comment){
-      addPost(playerName, playerAvatar, `${r.name}: ${comment}`);
-      r.stars += Math.floor(Math.random()*3)+1; // เพิ่มดาวจำลอง
-      r.menu.forEach(m=>m.stars += Math.floor(Math.random()*3));
-      updateRanking();
-    }
-  }
+// ------------------ รีวิวร้าน ------------------
+function reviewShop(shopIndex){
+  const shop = shops[shopIndex];
+  shop.menus.forEach(m=> m.stars += Math.floor(Math.random()*5)+1); // ตัวอย่าง random ดาว
+  shop.status = 'available';
+  renderShops();
+  addPost(`${playerName} รีวิว ${shop.name} และเมนูทั้งหมด!`);
+}
 
-  // ------------------ Community ------------------
-  function addPost(name, avatar, content){
-    const postDiv = document.createElement('div');
-    postDiv.className = 'post';
-    postDiv.innerHTML = `<img src="${avatar}" alt="avatar"><div class="post-content"><strong>${name}</strong><br>${content}</div>`;
-    document.getElementById('posts').prepend(postDiv);
-  }
+// ------------------ Community ------------------
+const posts = [];
 
-  // ------------------ Ranking ------------------
-  function updateRanking(){
-    // ร้าน
-    const sortedRestaurants = [...restaurants].sort((a,b)=>b.stars - a.stars);
-    const restaurantList = document.getElementById('restaurant-ranking');
-    restaurantList.innerHTML = '';
-    sortedRestaurants.forEach(r=>{
-      const li = document.createElement('li');
-      li.innerText = `${r.name} ⭐${r.stars}`;
-      restaurantList.appendChild(li);
-    });
+function addPost(text){
+  const postText = text || document.getElementById('newPost').value;
+  if(!postText) return;
+  posts.unshift({player:playerName, avatar:playerAvatar, text:postText});
+  document.getElementById('newPost').value = '';
+  renderPosts();
+}
 
-    // เมนู
-    const allMenus = [];
-    restaurants.forEach(r=> r.menu.forEach(m=> allMenus.push({name:m.name, stars:m.stars})));
-    const sortedMenus = allMenus.sort((a,b)=>b.stars - a.stars);
-    const menuList = document.getElementById('menu-ranking');
-    menuList.innerHTML = '';
-    sortedMenus.slice(0,5).forEach(m=>{
-      const li = document.createElement('li');
-      li.innerText = `${m.name} ⭐${m.stars}`;
-      menuList.appendChild(li);
-    });
-  }
+function renderPosts(){
+  const container = document.getElementById('posts');
+  container.innerHTML = '';
+  posts.forEach(p=>{
+    const div = document.createElement('div');
+    div.className='post';
+    div.innerHTML = `<div class="post-avatar" style="background-image:url('${p.avatar}')"></div>
+                     <div class="post-content"><b>${p.player}</b><br>${p.text}</div>`;
+    container.appendChild(div);
+  });
+}
 
-  updateRanking();
+// ------------------ Quest / Reward ------------------
+let questPoints = 0;
+function completeQuest(){
+  questPoints +=5;
+  alert(`คุณได้รับ 5 คะแนนเควส! คะแนนรวม: ${questPoints}`);
+}
 
+// ------------------ ตัวอย่าง interaction ------------------
+document.querySelectorAll('.shop button').forEach(btn=>{
+  btn.addEventListener('click', completeQuest);
+});
 </script>
 
 </body>
