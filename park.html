@@ -1,153 +1,76 @@
+{"id":"78017","variant":"standard"}
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>สวน RPG - TastLink</title>
-<style>
-  body{
-    font-family: 'Courier New', monospace;
-    background: linear-gradient(to top, #2a2a72, #009ffd);
-    margin:0;
-    color:#fff;
-  }
-  header{
-    background-color: rgba(0,0,0,0.7);
-    padding:10px;
-    text-align:center;
-  }
-  #player-info{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:10px;
-  }
-  #player-avatar{
-    font-size:3rem;
-    width:80px;
-    height:80px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:50%;
-    margin-right:10px;
-  }
-  .shop{
-    background-color: rgba(255,255,255,0.1);
-    margin:10px;
-    padding:10px;
-    border-radius:10px;
-  }
-  .menu-item{
-    display:flex;
-    justify-content:space-between;
-  }
-  button{
-    cursor:pointer;
-    border-radius:5px;
-    padding:5px 10px;
-    margin:5px;
-    border:none;
-    background-color:#ffcc00;
-    color:#000;
-  }
-  #garden{
-    display:flex;
-    flex-wrap:wrap;
-    margin-top:20px;
-    justify-content:center;
-  }
-  .review-avatar{
-    margin:5px;
-    text-align:center;
-  }
-</style>
+<title>สวนแห่งนักผจญภัย - TastLink</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="park">
+  <div id="profile-panel">
+    <div id="avatar-display"></div>
+    <h2 id="player-display">นักผจญภัย</h2>
+    <p id="points-display">คะแนน: 0</p>
+  </div>
 
-<header>
-  <h1>สวน RPG ของ TastLink</h1>
-  <p>สวัสดี นักผจญภัย! รีวิวอาหารและโหวตร้านโปรดของเจ้าที่นี่!</p>
-</header>
+  <div id="shops">
+    <h3>ร้านอาหารแนะนำวันนี้</h3>
+    <div class="shop-card" data-shop="ร้าน A">
+      <h4>ร้าน A</h4>
+      <div class="menu-item" data-menu="ข้าวผัด">ข้าวผัด - 50 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="ส้มตำ">ส้มตำ - 40 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="ต้มยำ">ต้มยำ - 60 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+    </div>
+    <div class="shop-card" data-shop="ร้าน B">
+      <h4>ร้าน B</h4>
+      <div class="menu-item" data-menu="บะหมี่">บะหมี่ - 45 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="ปอเปี๊ยะ">ปอเปี๊ยะ - 30 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="ไก่ทอด">ไก่ทอด - 55 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+    </div>
+    <div class="shop-card" data-shop="ร้าน C">
+      <h4>ร้าน C</h4>
+      <div class="menu-item" data-menu="ซูชิ">ซูชิ - 80 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="ราเมง">ราเมง - 90 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="เทมปุระ">เทมปุระ - 70 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+    </div>
+    <div class="shop-card" data-shop="ร้าน D">
+      <h4>ร้าน D</h4>
+      <div class="menu-item" data-menu="พิซซ่า">พิซซ่า - 150 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="พาสต้า">พาสต้า - 120 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="สลัด">สลัด - 90 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+    </div>
+    <div class="shop-card" data-shop="ร้าน E">
+      <h4>ร้าน E</h4>
+      <div class="menu-item" data-menu="เบอร์เกอร์">เบอร์เกอร์ - 130 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="เฟรนช์ฟราย">เฟรนช์ฟราย - 50 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+      <div class="menu-item" data-menu="น้ำอัดลม">น้ำอัดลม - 20 บาท <button class="vote-shop">โหวตร้าน</button> <button class="vote-menu">โหวตเมนู</button></div>
+    </div>
+  </div>
 
-<div id="player-info">
-  <div id="player-avatar"></div>
-  <div id="player-name-display"></div>
+  <div id="garden">
+    <h3>สวนแห่งนักผจญภัย</h3>
+    <div id="community-feed"></div>
+  </div>
+
+  <div id="leaderboard">
+    <h3>Leaderboard</h3>
+    <ul id="ranking-list"></ul>
+  </div>
+
+  <div id="weekly-event">
+    <h3>โหวตร้านสัปดาห์หน้า</h3>
+    <select id="weekly-shop">
+      <option value="ร้าน A">ร้าน A</option>
+      <option value="ร้าน B">ร้าน B</option>
+      <option value="ร้าน C">ร้าน C</option>
+      <option value="ร้าน D">ร้าน D</option>
+      <option value="ร้าน E">ร้าน E</option>
+    </select>
+    <button id="vote-weekly">โหวต</button>
+  </div>
 </div>
-
-<h2>ร้านอาหารแนะนำวันนี้</h2>
-<div id="shops-container"></div>
-
-<h2>สวนแห่งรีวิว</h2>
-<div id="garden"></div>
-
-<script>
-  // ดึงข้อมูลจาก URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const playerName = urlParams.get('player');
-  const playerEmoji = urlParams.get('emoji');
-  const playerBg = urlParams.get('bg');
-
-  const playerAvatar = document.getElementById('player-avatar');
-  playerAvatar.textContent = playerEmoji;
-  playerAvatar.style.backgroundColor = playerBg;
-
-  document.getElementById('player-name-display').textContent = playerName;
-
-  // ตัวอย่างร้านอาหาร
-  const shops = [
-    {name:'ร้านปิ้งย่าง', menu:[{name:'หมูย่าง',price:100},{name:'ไก่ย่าง',price:90},{name:'สเต็ก',price:150}]},
-    {name:'ร้านกาแฟ', menu:[{name:'ลาเต้',price:60},{name:'คาปูชิโน',price:65},{name:'มอคค่า',price:70}]},
-    {name:'ร้านขนมหวาน', menu:[{name:'วาฟเฟิล',price:80},{name:'แพนเค้ก',price:75},{name:'ไอศกรีม',price:50}]},
-    {name:'ร้านอาหารญี่ปุ่น', menu:[{name:'ซูชิ',price:120},{name:'ราเมง',price:110},{name:'ข้าวหน้าปลา',price:130}]},
-    {name:'ร้านอาหารไทย', menu:[{name:'ต้มยำกุ้ง',price:90},{name:'ผัดไทย',price:85},{name:'แกงเขียวหวาน',price:95}]},
-  ];
-
-  const shopsContainer = document.getElementById('shops-container');
-
-  shops.forEach((shop,i)=>{
-    const shopDiv = document.createElement('div');
-    shopDiv.className='shop';
-    const shopName = document.createElement('h3');
-    shopName.textContent = shop.name;
-    shopDiv.appendChild(shopName);
-
-    shop.menu.forEach((item,j)=>{
-      const menuDiv = document.createElement('div');
-      menuDiv.className='menu-item';
-      menuDiv.textContent = `${item.name} - ${item.price} บาท`;
-
-      const voteBtn = document.createElement('button');
-      voteBtn.textContent='โหวตเมนู';
-      voteBtn.addEventListener('click',()=>{
-        addReview(playerName, playerEmoji, `${item.name} ที่ ${shop.name}`);
-        voteBtn.disabled = true;
-      });
-
-      menuDiv.appendChild(voteBtn);
-      shopDiv.appendChild(menuDiv);
-    });
-
-    const voteShopBtn = document.createElement('button');
-    voteShopBtn.textContent='โหวตร้านนี้';
-    voteShopBtn.addEventListener('click',()=>{
-      addReview(playerName, playerEmoji, `โหวตร้าน ${shop.name}`);
-      voteShopBtn.disabled = true;
-    });
-    shopDiv.appendChild(voteShopBtn);
-
-    shopsContainer.appendChild(shopDiv);
-  });
-
-  const garden = document.getElementById('garden');
-
-  function addReview(name, emoji, text){
-    const div = document.createElement('div');
-    div.className='review-avatar';
-    div.innerHTML=`<div style="font-size:2rem">${emoji}</div><div>${text}</div>`;
-    garden.appendChild(div);
-  }
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
