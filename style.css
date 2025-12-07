@@ -1,25 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 body {
-    margin: 0;
     font-family: 'Press Start 2P', cursive;
-    background: linear-gradient(135deg,#6a4c3b,#3e2723);
-    color: #fff1c9;
+    background-color: #f5f1e7; /* โทนสีไม้/โรงเตี๊ยม */
+    margin:0; padding:0;
 }
-h1,h2,h3 { color: #ffd700; text-shadow: 1px 1px 2px #000; }
-p.npc-text, p.quest-text { background: #1565c0; padding: 10px; border-radius: 8px; }
-input[type=text], input[type=color] {
-    padding: 8px; margin: 5px 0; border-radius: 5px; border: none;
+
+h1,h2,h3,p {
+    margin: 10px;
 }
-#avatar-preview, #player-avatar {
-    font-size: 3rem; width: 80px; height: 80px; display:flex; align-items:center; justify-content:center;
-    border-radius: 10px; margin: 10px 0; transition: all 0.3s ease;
+
+.quest-text {
+    color: #FFD700; /* ตัวอักษรสีเหลืองสำหรับเควส */
+    background-color: #1e3c72; /* กล่องสีน้ำเงิน */
+    padding: 10px;
+    border-radius: 8px;
 }
-.btn-glow {
-    padding: 10px 20px; font-family: 'Press Start 2P', cursive; font-size: 0.7rem;
-    margin: 10px; border: none; border-radius: 5px; background:#ff9800; color:#fff; cursor:pointer;
-    position: relative; overflow: hidden; transition: all 0.2s;
+
+#avatar-preview {
+    font-size: 50px;
+    width: 80px;
+    height: 80px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius: 10px;
+    margin: 10px 0;
 }
-.btn-glow:hover { box-shadow: 0 0 15px #ffd700, 0 0 30px #ff9800; transform: translateY(-3px);}
-.btn-glow:active { animation: warp 0.3s;}
-@keyframes warp { 0%{transform:scale(1)}50%{transform:scale(1.1) rotate(5deg)}100%{transform:scale(1)}}
-#shops-container{display:flex;flex-wrap:wrap;gap:15px;}
-.shop-card{background:#a1887f;padding:10px;border-radius:10px;width:180px;}
+
+.glow-button {
+    background-color: #8B4513;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #FFD700;
+    transition: all 0.2s ease;
+}
+
+.glow-button:hover {
+    box-shadow: 0 0 20px #FFD700, 0 0 30px #FFA500;
+    transform: translateY(-3px);
+}
+
+.restaurant-card {
+    background-color: #deb887;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    display:inline-block;
+    width: 220px;
+}
+
+.menu-item {
+    margin: 5px 0;
+}
