@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TasteLink | YumYum Park</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div id="park-screen">
+  <h2 id="welcome-player">สวัสดี นักผจญภัย!</h2>
+  <div id="player-profile" style="font-size:64px; width:100px; height:100px; text-align:center; line-height:100px; border-radius:50%;"></div>
+  
+  <div id="quests">
+    <h3>เควสประจำวัน</h3>
+    <button onclick="completeQuest('review')">รีวิวอาหาร +10</button>
+    <button onclick="completeQuest('vote')">โหวตร้าน +10</button>
+    <button onclick="completeQuest('community')">โพสต์ +10</button>
+  </div>
+
+  <div id="restaurants">
+    <h3>ร้านอาหารแนะนำ</h3>
+    <div id="restaurant-list"></div>
+  </div>
+
+  <div id="community">
+    <h3>ชุมชน</h3>
+    <div id="posts"></div>
+    <input type="text" id="post-text" placeholder="โพสต์ข้อความ...">
+    <button onclick="addPost()">โพสต์</button>
+  </div>
+
+  <div id="ranking">
+    <h3>Top ร้านอาหาร</h3>
+    <ul id="ranking-list"></ul>
+  </div>
+
+  <div id="points">แต้ม: 0</div>
+</div>
+
+<script type="module">
+import { db } from './firebase.js';
+import { doc, getDoc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+const urlParams = new URLSearchParams(window.location.search);
+const playerName = urlParams.get('player');
+
+let playerData = {};
+
+// โหลดข้อมูลผู้เล่น
+async function loadPlayer() {
+  const docRef = doc(db, 'players', playerName);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    playerData = docSnap.data();
+    document.getElementById('welcome-player').textContent = `สวัสดี ${playerData.name} นักผจญภัย!`;
+    const profile = document.getElementById('player-profile');
+    profile.textContent = playerData.emoji;
+    profile.style.backgroundColor = playerData.bg;
+  }
+}
+
+loadPlayer();
+
+// ตัวอย่างร้านอาหาร
+let restaurantData = [
+  {name:'ร้าน 🍔', menu:[{name:'เบอร์เกอร์', stars:0},{name:'เฟรนช์ฟราย', stars:0},{name:'สลัด', stars:0}]},
+  {name:'ร้าน 🍣', menu:[{name:'ซูชิ', stars:0},{name:'ซาชิมิ', stars:0},{name:'ข้าวปั้น', stars:0}]},
+  {name:'ร้าน 🍕', menu:[{name:'พิซซ่า', stars:0},{name:'พาสต้า', stars:0},{name:'สลัดพิซซ่า', stars:0}]},
+  {name:'ร้าน 🍜', menu:[{name:'ราเมง', stars:0},{name:'เกี๊ยวซ่า', stars:0},{name:'ข้าวหน้าเนื้อ', stars:0}]},
+  {name:'ร้าน 🥗', menu:[{name:'สลัดผัก', stars:0},{name:'สลัดผลไม้', stars:0},{name:'น้ำสลัด', stars:0}]}
+];
+
+function renderRestaurants() {
+  const container = document.getElementById('restaurant-list');
+  container.innerHTML = '';
+  restaurantData.forEach((r,i)=>{
+    const div = document.createElement('div');
+    div.innerHTML = `<h4>${r.name}</h4>`;
+    r.menu.forEach((m,j)=>{
+      const btn = document.createElement('button');
+      btn.textContent = `⭐ ${m.stars} | รีวิว/โหวต`;
+      btn.onclick = ()=> voteMenu(i,j);
+      div.appendChild(document.createElement('br'));
+      div.appendChild(document.createTextNode(m.name));
+      div.appendChild(btn);
+    });
+    container.appendChild(div);
+  });
+}
+
+renderRestaurants();
+
+// ระบบโหวตร้าน/เมนู
+function voteMenu(ri, mi) {
+  if(!playerData.votes) playerData.votes = {};
+  if(!playerData.votes[restaurantData[ri].name]) playerData.votes[restaurantData[ri].name] = {store:false, menu:false};
+  const voteObj = playerData.votes[restaurantData[ri].name];
+  if(!voteObj.store) { voteObj.store=true; alert('โหวตร้านสำเร็จ +10'); playerData.points+=10; }
+  else if(!voteObj.menu) { voteObj.menu=true; alert('โหวตเมนูสำเร็จ +10'); playerData.points+=10; }
+  else { alert('คุณโหวตครบแล้วสำหรับร้านนี้'); return; }
+
+  restaurantData[ri].menu[mi].stars+=1;
+
+  updateDoc(doc(db,'players',playerName),{votes:playerData.votes, points:playerData.points});
+  document.getElementById('points').textContent = 'แต้ม: '+playerData.points;
+  renderRestaurants();
+  renderRanking();
+}
+
+function renderRanking() {
+  const rankList = document.getElementById('ranking-list');
+  let allMenu = [];
+  restaurantData.forEach(r=>r.menu.forEach(m=>allMenu.push({name:m.name, stars:m.stars})));
+  allMenu.sort((a,b)=>b.stars-a.stars);
+  rankList.innerHTML='';
+  allMenu.slice(0,5).forEach((m,i)=>{ rankList.innerHTML+=`<li>${i+1}. ${m.name} ⭐${m.stars}</li>`; });
+}
+
+// คอมมูนิตี้
+function addPost() {
+  const text = document.getElementById('post-text').value;
+  if(!text) return;
+  const post = {emoji: playerData.emoji, name:playerName, text:text};
+  // เก็บ Firestore
+  const postsRef = doc(db,'players',playerName);
+  if(!playerData.reviews) playerData.reviews=[];
+  playerData.reviews.unshift(post);
+  updateDoc(postsRef,{reviews:playerData.reviews, points:playerData.points+5});
+  document.getElementById('post-text').value='';
+  renderPosts();
+}
+
+function renderPosts() {
+  const container = document.getElementById('posts');
+  container.innerHTML='';
+  if(!playerData.reviews) return;
+  playerData.reviews.forEach(p=>{
+    const div = document.createElement('div');
+    div.textContent = `${p.emoji} ${p.name}: ${p.text}`;
+    container.appendChild(div);
+  });
+}
+
+loadPlayer();
+renderRestaurants();
+renderPosts();
+renderRanking();
+
+</script>
+
+</body>
+</html>
