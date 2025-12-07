@@ -1,151 +1,152 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TasteLink - ยินดีต้อนรับสู่ YumYum Park!</title>
-  <style>
-    /* ------------------ พื้นฐาน ------------------ */
-    body {
-      margin: 0;
-      font-family: 'Comic Sans MS', sans-serif;
-      background: linear-gradient(to bottom, #a0e1ff, #ffffff);
-      overflow-x: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 TasteLink | YumYum Park</title>
+<style>
+  /* ------------------ พื้นฐาน ------------------ */
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', sans-serif;
+    background: linear-gradient(to bottom, #a0e1ff, #ffffff);
+    overflow-x: hidden;
+  }
 
-    h1, h2, h3 {
-      text-align: center;
-      color: #ff6f61;
-      text-shadow: 2px 2px #ffe066;
-    }
+  h1, h2 {
+    text-align: center;
+    color: #ff6f61;
+    text-shadow: 2px 2px #ffe066;
+  }
 
-    /* ------------------ หน้าต้อนรับ ------------------ */
-    #welcome-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-image: url('https://images.unsplash.com/photo-1566392115883-2fdbef1b85aa?auto=format&fit=crop&w=1350&q=80'); 
-      background-size: cover;
-      background-position: center;
-      color: white;
-      text-shadow: 2px 2px 4px #000;
-    }
+  /* ------------------ หน้า Welcome ------------------ */
+  #welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url('https://images.unsplash.com/photo-1566392115883-2fdbef1b85aa?auto=format&fit=crop&w=1350&q=80'); 
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-shadow: 2px 2px 4px #000;
+  }
 
-    #welcome-screen button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 18px;
-      font-weight: bold;
-      border: none;
-      border-radius: 12px;
-      background-color: #ffcc00;
-      color: #333;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
+  #welcome-screen button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    background-color: #ffcc00;
+    color: #333;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
 
-    #welcome-screen button:hover {
-      transform: scale(1.1);
-      box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
-    }
+  #welcome-screen button:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+  }
 
-    /* ------------------ ฟอร์มล็อกอิน ------------------ */
-    #login-screen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #ffe0f0;
-    }
+  /* ------------------ หน้า Login ------------------ */
+  #login-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffe0f0;
+  }
 
-    #login-screen input, #login-screen select {
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 2px solid #ff6f61;
-    }
+  #login-screen input {
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 2px solid #ff6f61;
+  }
 
-    #login-screen button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      background-color: #ff6f61;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
+  #login-screen button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
 
-    /* ------------------ อวาตาร์ ------------------ */
-    #avatar-preview {
-      width: 150px;
-      height: 150px;
-      margin: 10px;
-      background-color: #fff;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 3px solid #ff6f61;
-    }
+  /* ------------------ Avatar ------------------ */
+  #avatar-preview {
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #ff6f61;
+    background-size: cover;
+    background-position: center;
+  }
 
-    #avatar-options {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+  #avatar-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-    .avatar-option {
-      width: 60px;
-      height: 60px;
-      margin: 5px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 2px solid #333;
-      cursor: pointer;
-      transition: transform 0.2s, border-color 0.2s;
-    }
+  .avatar-option {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #333;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
 
-    .avatar-option:hover {
-      transform: scale(1.1);
-      border-color: #ff6f61;
-    }
+  .avatar-option:hover {
+    transform: scale(1.1);
+    border-color: #ff6f61;
+  }
 
-    /* ------------------ ฟุตเตอร์ ------------------ */
-    footer {
-      text-align: center;
-      padding: 10px;
-      background-color: #333;
-      color: #fff;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-
-  </style>
+  /* ------------------ Footer ------------------ */
+  footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+</style>
 </head>
 <body>
 
-  <!-- หน้าแรกต้อนรับ -->
+  <!-- หน้า Welcome -->
   <div id="welcome-screen">
     <h1>ยินดีต้อนรับสู่ TasteLink!</h1>
-    <h2>เข้าสู่ YumYum Park 🌳🍔</h2>
+    <h2>คุณพร้อมจะผจญภัยไปกับทุกคนในแดนของอร่อยแล้วรึยัง? 🌳🍔</h2>
     <button onclick="enterLogin()">เริ่มการผจญภัย!</button>
   </div>
 
-  <!-- หน้า Login + เลือกอวาตาร์ -->
+  <!-- หน้า Login + Avatar -->
   <div id="login-screen">
-    <h2>ตั้งชื่อผู้กล้าและเลือกอวาตาร์</h2>
+    <h2>ตั้งชื่อผู้กล้าและสร้างตัวละครของคุณ</h2>
     <input type="text" id="player-name" placeholder="พิมพ์ชื่อผู้เล่น..." maxlength="12">
 
     <div id="avatar-preview"></div>
 
     <div id="avatar-options">
       <img src="https://i.ibb.co/Y2GfKz6/avatar1.png" class="avatar-option" onclick="selectAvatar(this.src)">
-      <img src="https://i.ibb.co/NjW0s4p/avatar2.png" class="avatar-option" onclick="selectAvatar(this.src)">
-      <img src="https://i.ibb.co/F0gC7zB/avatar3.png" class="avatar-option" onclick="selectAvatar(this.src)">
+      <img src="https://i.ibb.co/7kH6dTM/avatar2.png" class="avatar-option" onclick="selectAvatar(this.src)">
+      <img src="https://i.ibb.co/6b9Q6J3/avatar3.png" class="avatar-option" onclick="selectAvatar(this.src)">
       <img src="https://i.ibb.co/hL0cZZx/avatar4.png" class="avatar-option" onclick="selectAvatar(this.src)">
       <img src="https://i.ibb.co/PNsG0vC/avatar5.png" class="avatar-option" onclick="selectAvatar(this.src)">
       <img src="https://i.ibb.co/Xk0CVh0/avatar6.png" class="avatar-option" onclick="selectAvatar(this.src)">
@@ -162,38 +163,33 @@
     © 2025 TasteLink - YumYum Park
   </footer>
 
-  <script>
-    let selectedAvatar = '';
+<script>
+let selectedAvatar = '';
 
-    function enterLogin() {
-      document.getElementById('welcome-screen').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-    }
+function enterLogin() {
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
 
-    function selectAvatar(src) {
-      selectedAvatar = src;
-      document.getElementById('avatar-preview').style.backgroundImage = `url('${src}')`;
-      document.getElementById('avatar-preview').style.backgroundSize = 'cover';
-    }
+function selectAvatar(src) {
+  selectedAvatar = src;
+  const preview = document.getElementById('avatar-preview');
+  preview.style.backgroundImage = `url('${src}')`;
+}
 
-    function startAdventure() {
-      const name = document.getElementById('player-name').value;
-      if (!name) {
-        alert('กรุณาพิมพ์ชื่อผู้เล่นก่อนเริ่มการผจญภัย!');
-        return;
-      }
-      if (!selectedAvatar) {
-        alert('กรุณาเลือกอวาตาร์ก่อนเริ่มการผจญภัย!');
-        return;
-      }
-      // เก็บข้อมูลผู้เล่นใน localStorage
-      localStorage.setItem('playerName', name);
-      localStorage.setItem('playerAvatar', selectedAvatar);
+function startAdventure() {
+  const name = document.getElementById('player-name').value;
+  if (!name) { alert('กรุณาพิมพ์ชื่อผู้เล่นก่อนเริ่มการผจญภัย!'); return; }
+  if (!selectedAvatar) { alert('กรุณาเลือกอวาตาร์ก่อนเริ่มการผจญภัย!'); return; }
 
-      // ไปหน้าต่อไป (สวน YumYum Park)
-      window.location.href = 'park.html';
-    }
-  </script>
+  // เก็บข้อมูลผู้เล่น
+  localStorage.setItem('playerName', name);
+  localStorage.setItem('playerAvatar', selectedAvatar);
+
+  // ไปหน้าสวน
+  window.location.href = 'park.html';
+}
+</script>
 
 </body>
 </html>
